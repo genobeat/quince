@@ -38,10 +38,11 @@ Everything about the event lives in one `CONFIG` object near the top of the
 - `massTime`, `partyTime`, `rsvpBy` — local time, `YYYY-MM-DDTHH:MM:SS`
 - `parents`, `godparents`
 - `mass`, `party` — name and address; map links are generated from these.
-  `mass: null` (with `massTime: null`) hides the church section everywhere —
-  that is the current setting, since only the one venue is confirmed. Give both
-  a value to switch the Mass back on.
-- `parents`, `godparents` — leave either empty and its line is omitted
+  `mass: null` (with `massTime: null`) hides the church section everywhere.
+  There is no Mass for this celebration, so it stays off; giving both a value
+  switches it back on if that ever changes.
+- `parents`, `godparents` — lists of names, joined with "y" or "and" to match
+  the language. An empty list drops that line entirely.
 - `dress` — separate `es` / `en` strings
 - `registry` — an array of `{ label, url }`; leave it empty to show only the
   lluvia de sobres
@@ -65,13 +66,11 @@ The page renders cleanly with these blank, but they are the open items:
 
 - **Times.** The reception is set to 6:00 pm and the rest of the itinerary
   follows from it. Every time in `CONFIG.itinerary` is a placeholder.
-- **Venue address.** `party.address` is empty, so the map links search on the
-  venue name alone. Adding the street address makes them exact.
 - **The court.** `court.damas` and `court.chambelanes`.
-- **Hosts.** `parents` and `godparents`.
+- **Padrinos.** `godparents` — the line is hidden until it has names.
 - **Registry.** `registry` is empty, so only the lluvia de sobres shows.
-- **RSVP contact.** `whatsapp` and `email` are still the sample values, and the
-  WhatsApp fallback needs a real number.
+- **Email.** `email` is empty, so the RSVP panel offers WhatsApp, text message
+  and copy-to-paste but no email option. Add an address to turn it on.
 
 ## How RSVP works
 
@@ -84,10 +83,21 @@ a running count of confirmed guests and a wishes wall built from the messages
 guests leave. A guest who already replied on that device sees their answer
 filled in and can edit it.
 
-**WhatsApp mode** — anywhere else (GitHub Pages, a local file, any static
-host), there is no storage available, so submitting composes a ready-to-send
-WhatsApp message to `CONFIG.whatsapp`, falling back to a `mailto:` to
-`CONFIG.email` if no number is set. The wishes wall stays empty.
+**Send mode** — anywhere else (GitHub Pages, a local file, any static host),
+there is no storage available. Submitting composes the guest's reply into one
+message and then asks how they want to send it, because not every guest uses
+WhatsApp:
+
+| Option | Goes to | Works on |
+| --- | --- | --- |
+| WhatsApp | `wa.me` link | phones and desktop with WhatsApp |
+| Text message | `sms:` link, prefilled | any phone |
+| Email | `mailto:` link | anywhere, if `email` is set |
+| Copy message | clipboard | anywhere, paste into any app |
+
+The host's number is also shown as a `tel:` link for guests who would rather
+call. Nothing is sent until the guest picks one, and the panel says so. The
+wishes wall stays empty in this mode.
 
 No code change is needed to switch between them; the same file does both.
 

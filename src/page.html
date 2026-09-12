@@ -476,6 +476,42 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 }
 
 .formnote { font-size: 0.95rem; color: var(--muted); margin-top: 1rem; text-align: center; }
+
+/* --- choosing how to send an RSVP when the page can't store it --- */
+.send-title {
+  font-family: var(--engrave);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  text-align: center;
+  margin: 0;
+}
+.send-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+  gap: 8px;
+  margin: 1.3rem 0 1.1rem;
+}
+.send-btn {
+  appearance: none;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cream);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 13px 12px;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.send-btn:hover { background: var(--gold); color: var(--midnight); border-color: var(--gold); }
+.send-foot { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.send-foot .btn-quiet { margin-top: 0; }
+.send-call { text-align: center; }
 .status { margin-top: 1rem; font-size: 1rem; text-align: center; }
 .status.err { color: #E8A0A0; }
 
@@ -918,6 +954,23 @@ body.gated { overflow: hidden; }
           <p class="formnote" id="rsvp-mode"></p>
         </form>
 
+        <div id="send-options" hidden>
+          <p class="send-title" data-i18n="send.title">Elige cómo enviar tu confirmación</p>
+          <div class="send-grid">
+            <a class="send-btn" id="send-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-i18n="send.whatsapp">WhatsApp</a>
+            <a class="send-btn" id="send-sms" href="#" data-i18n="send.sms">Mensaje de texto</a>
+            <a class="send-btn" id="send-email" href="#" data-i18n="send.email">Correo</a>
+            <button type="button" class="send-btn" id="send-copy" data-i18n="send.copy">Copiar mensaje</button>
+          </div>
+          <p class="hint send-call" id="send-call"></p>
+          <p class="status" id="send-status" role="status" aria-live="polite"></p>
+          <div class="send-foot">
+            <button type="button" class="btn-quiet" id="send-done" data-i18n="send.done">Ya lo envié</button>
+            <button type="button" class="btn-quiet" id="send-back" data-i18n="send.back">Volver al formulario</button>
+          </div>
+          <p class="formnote" data-i18n="send.note">Tu confirmación no se envía hasta que elijas una de estas opciones.</p>
+        </div>
+
         <div id="rsvp-thanks" class="thanks" hidden>
           <div class="mark" aria-hidden="true">Gracias</div>
           <p id="thanks-line">Tu confirmación quedó registrada.</p>
@@ -966,15 +1019,15 @@ const CONFIG = {
   partyTime: "2026-10-30T18:00:00",
   rsvpBy:    "2026-09-30T23:59:00",
 
-  // --- Who is hosting ---
-  parents:    "",
-  godparents: "",
+  // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
+  parents:    ["Adriana Valdez", "Jose Valdez"],
+  godparents: [],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
   mass: null,
   party: {
     name: "LUXOR Wedding & Event",
-    address: ""
+    address: "500 Baker St, Bakersfield, CA 93305"
   },
 
   // --- Dress code ---
@@ -988,10 +1041,12 @@ const CONFIG = {
 
   hashtag: "#LosXVdeAshley",
 
-  // --- Fallback RSVP, used when the page runs outside claude.ai
-  //     (e.g. GitHub Pages) and cannot save responses itself. ---
-  whatsapp: "+521234567890",   // international format, digits after the +
-  email: "xv.isabella@example.com",
+  // --- RSVP contact, used when the page runs outside claude.ai (e.g. GitHub
+  //     Pages) and cannot save responses itself. The guest then picks how to
+  //     send: WhatsApp, a text message, email, or copy-and-paste.
+  //     Leave `email` empty to drop the email option. ---
+  whatsapp: "+16615296069",   // international format, digits after the +
+  email: "",
 
   // --- The court. Add plain strings, or { name: "...", honor: true } to
   //     mark the dama/chambelán de honor. While both lists are empty the
@@ -1073,7 +1128,18 @@ const T = {
     "rsvp.full": "La lista de confirmaciones está llena. Avísanos por WhatsApp.",
     "rsvp.thanksYes": "Te esperamos el {date}.",
     "rsvp.thanksNo": "Gracias por avisarnos. Te vamos a extrañar.",
-    "rsvp.whatsappMode": "Al enviar se abrirá WhatsApp con tu confirmación lista.",
+    "rsvp.whatsappMode": "Al enviar podrás elegir WhatsApp, mensaje de texto o correo.",
+    "send.title": "Elige cómo enviar tu confirmación",
+    "send.whatsapp": "WhatsApp",
+    "send.sms": "Mensaje de texto",
+    "send.email": "Correo",
+    "send.copy": "Copiar mensaje",
+    "send.copied": "Mensaje copiado. Pégalo donde prefieras.",
+    "send.copyFail": "Selecciona el texto de arriba y cópialo a mano.",
+    "send.call": "¿Prefieres llamar? Marca al ",
+    "send.done": "Ya lo envié",
+    "send.back": "Volver al formulario",
+    "send.note": "Tu confirmación no se envía hasta que elijas una de estas opciones.",
     "rsvp.tally": "{guests} invitados confirmados",
     "wishes.kicker": "De parte de todos",
     "wishes.title": "Muro de buenos deseos",
@@ -1133,7 +1199,18 @@ const T = {
     "rsvp.full": "The guest list is full. Let us know on WhatsApp instead.",
     "rsvp.thanksYes": "We'll see you on {date}.",
     "rsvp.thanksNo": "Thank you for letting us know. You'll be missed.",
-    "rsvp.whatsappMode": "Sending opens WhatsApp with your RSVP ready to go.",
+    "rsvp.whatsappMode": "You'll choose WhatsApp, a text message or email when you send.",
+    "send.title": "Choose how to send your RSVP",
+    "send.whatsapp": "WhatsApp",
+    "send.sms": "Text message",
+    "send.email": "Email",
+    "send.copy": "Copy message",
+    "send.copied": "Message copied. Paste it wherever you like.",
+    "send.copyFail": "Select the text above and copy it by hand.",
+    "send.call": "Prefer to call? Dial ",
+    "send.done": "I've sent it",
+    "send.back": "Back to the form",
+    "send.note": "Your RSVP isn't sent until you pick one of these.",
     "rsvp.tally": "{guests} guests confirmed",
     "wishes.kicker": "From everyone",
     "wishes.title": "Wishes wall",
@@ -1189,6 +1266,21 @@ function formatDate(date) {
 function weekdayOf(date) {
   const w = T[lang].weekdays[date.getDay()];
   return lang === "es" ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+}
+
+// "Adriana Valdez y Jose Valdez" / "... and ..."
+function nameList(list) {
+  if (!list || !list.length) return "";
+  if (list.length === 1) return list[0];
+  const connector = lang === "es" ? " y " : " and ";
+  return list.slice(0, -1).join(", ") + connector + list[list.length - 1];
+}
+
+function formatPhone(digits) {
+  const local = (digits.length === 11 && digits.charAt(0) === "1") ? digits.slice(1) : digits;
+  return local.length === 10
+    ? "(" + local.slice(0, 3) + ") " + local.slice(3, 6) + "-" + local.slice(6)
+    : "+" + digits;
 }
 
 function el(tag, className, text) {
@@ -1383,10 +1475,10 @@ function applyLanguage() {
   }
 
   // The hosting lines only appear once there are names to put in them.
-  $("#hosts-parents").hidden = !CONFIG.parents;
-  $("#hosts-godparents").hidden = !CONFIG.godparents;
-  $("#host-parents").textContent = CONFIG.parents;
-  $("#host-godparents").textContent = CONFIG.godparents;
+  $("#hosts-parents").hidden = !nameList(CONFIG.parents);
+  $("#hosts-godparents").hidden = !nameList(CONFIG.godparents);
+  $("#host-parents").textContent = nameList(CONFIG.parents);
+  $("#host-godparents").textContent = nameList(CONFIG.godparents);
 
   const orderSub = document.querySelector("#itinerary .sub");
   orderSub.textContent = weekdayOf(MAIN) + " " + formatDate(MAIN);
@@ -1413,6 +1505,8 @@ function applyLanguage() {
   renderWishes(lastWishes);
   updateTally(lastTally);
   updateModeNote();
+  // The send panel's links carry a composed message, so rebuild it in the new language.
+  if (pendingReply && !$("#send-options").hidden) showSendOptions(pendingReply);
   if (savedReply) showThanks(savedReply.attending);
 
   $$(".langswitch button").forEach((b) => {
@@ -1481,6 +1575,7 @@ function showThanks(attending) {
 
 $("#f-edit").addEventListener("click", () => {
   $("#rsvp-thanks").hidden = true;
+  $("#send-options").hidden = true;
   form.hidden = false;
   statusLine.textContent = "";
   statusLine.className = "status";
@@ -1510,7 +1605,7 @@ function readForm() {
   };
 }
 
-function whatsappText(reply) {
+function rsvpMessage(reply) {
   const lines = lang === "es"
     ? ["Confirmación XV de " + CONFIG.firstName, "Nombre: " + reply.name,
        reply.attending === "si" ? "Asistiré — personas: " + reply.guests : "No podré asistir"]
@@ -1536,15 +1631,8 @@ form.addEventListener("submit", async (event) => {
   statusLine.className = "status";
   statusLine.textContent = "";
 
-  if (mode === "whatsapp") {
-    const digits = CONFIG.whatsapp.replace(/[^0-9]/g, "");
-    const url = digits
-      ? "https://wa.me/" + digits + "?text=" + encodeURIComponent(whatsappText(reply))
-      : "mailto:" + CONFIG.email + "?subject=" + encodeURIComponent("RSVP " + CONFIG.firstName) +
-        "&body=" + encodeURIComponent(whatsappText(reply));
-    window.open(url, "_blank", "noopener");
-    savedReply = reply;
-    showThanks(reply.attending);
+  if (mode !== "saved") {
+    showSendOptions(reply);
     return;
   }
 
@@ -1564,6 +1652,77 @@ form.addEventListener("submit", async (event) => {
     button.disabled = false;
     button.textContent = t("rsvp.submit");
   }
+});
+
+/* ---------- choosing a channel when the page can't store the reply ----------
+   Not every guest uses WhatsApp, so the same composed message is offered as a
+   text message, an email, and plain text to copy — plus the number to call. */
+let pendingReply = null;
+
+function showSendOptions(reply) {
+  pendingReply = reply;
+  const body = rsvpMessage(reply);
+  const digits = CONFIG.whatsapp.replace(/[^0-9]/g, "");
+  const subject = lang === "es"
+    ? "Confirmación XV de " + CONFIG.firstName
+    : CONFIG.firstName + " — RSVP";
+
+  const whatsapp = $("#send-whatsapp");
+  whatsapp.hidden = !digits;
+  if (digits) whatsapp.href = "https://wa.me/" + digits + "?text=" + encodeURIComponent(body);
+
+  const sms = $("#send-sms");
+  sms.hidden = !digits;
+  // "?&body=" is the one form both iOS and Android accept
+  if (digits) sms.href = "sms:+" + digits + "?&body=" + encodeURIComponent(body);
+
+  const mail = $("#send-email");
+  mail.hidden = !CONFIG.email;
+  if (CONFIG.email) {
+    mail.href = "mailto:" + CONFIG.email +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+  }
+
+  const call = $("#send-call");
+  call.textContent = "";
+  if (digits) {
+    call.appendChild(document.createTextNode(t("send.call")));
+    const tel = el("a", null, formatPhone(digits));
+    tel.href = "tel:+" + digits;
+    call.appendChild(tel);
+  }
+
+  $("#send-copy").dataset.body = body;
+  $("#send-status").textContent = "";
+  $("#send-status").className = "status";
+  form.hidden = true;
+  $("#send-options").hidden = false;
+}
+
+$("#send-copy").addEventListener("click", async () => {
+  const body = $("#send-copy").dataset.body || "";
+  const status = $("#send-status");
+  try {
+    await navigator.clipboard.writeText(body);
+    status.className = "status";
+    status.textContent = t("send.copied");
+  } catch (error) {
+    status.className = "status err";
+    status.textContent = t("send.copyFail");
+  }
+});
+
+$("#send-done").addEventListener("click", () => {
+  $("#send-options").hidden = true;
+  savedReply = pendingReply;
+  showThanks(pendingReply ? pendingReply.attending : "si");
+});
+
+$("#send-back").addEventListener("click", () => {
+  $("#send-options").hidden = true;
+  form.hidden = false;
+  $("#f-name").focus();
 });
 
 /* ---------- wishes wall + running tally ---------- */
