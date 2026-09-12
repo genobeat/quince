@@ -44,12 +44,13 @@ img { max-width: 100%; }
   --midnight-2: #0D1225;
   --surface:    #141C36;
   --plum:       #2A1B3D;
-  --gold:       #C9A227;
-  --gold-2:     #D9BC63;
-  --foil:       #F4E6BE;
+  --metal:      #A3B1C6;
+  --metal-2:    #AFBFD6;
+  --metal-dk:   #6B7486;
+  --foil:       #F5F9FF;
   --cream:      #EFE8DA;
-  --muted:      #939AB8;
-  --line:       rgba(201, 162, 39, 0.26);
+  --muted:      #8F96B2;
+  --line:       rgba(194, 204, 219, 0.26);
   --line-soft:  rgba(147, 154, 184, 0.20);
 
   --display: "Pinyon Script", "Snell Roundhand", cursive;
@@ -113,7 +114,7 @@ section.hero { padding-block: clamp(64px, 10vw, 104px) clamp(40px, 6vw, 64px); }
   font-weight: 400;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   margin: 0 0 1.1rem;
 }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
@@ -137,10 +138,10 @@ h2 {
 p { margin: 0 0 1.1rem; }
 p:last-child:not(.sub) { margin-bottom: 0; }   /* .sub keeps its breathing room */
 .center { text-align: center; }
-a { color: var(--gold-2); }
+a { color: var(--metal-2); }
 
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--gold-2);
+  outline: 2px solid var(--metal-2);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -176,7 +177,7 @@ a { color: var(--gold-2); }
 }
 .langswitch button[aria-pressed="true"] {
   color: var(--midnight);
-  background: linear-gradient(160deg, var(--foil), var(--gold));
+  background: linear-gradient(160deg, var(--foil), var(--metal));
 }
 
 /* ---------- hero ---------- */
@@ -191,7 +192,7 @@ a { color: var(--gold-2); }
   line-height: 1.06;
   letter-spacing: 0.01em;
   color: var(--foil);
-  background: linear-gradient(168deg, #FFF6DE 12%, var(--gold) 46%, #8C6E1C 62%, var(--foil) 88%);
+  background: linear-gradient(168deg, #FFFFFF 12%, var(--metal) 46%, #5E6878 62%, var(--foil) 88%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -219,7 +220,7 @@ a { color: var(--gold-2); }
   justify-content: center;
   gap: 0.55rem 0.9rem;
 }
-.datestamp .dot { color: var(--gold); font-size: 0.6em; }
+.datestamp .dot { color: var(--metal); font-size: 0.6em; }
 
 /* ---------- countdown ---------- */
 .countdown {
@@ -254,7 +255,7 @@ a { color: var(--gold-2); }
 .cd-done {
   font-family: var(--display);
   font-size: 2rem;
-  color: var(--gold-2);
+  color: var(--metal-2);
   margin-top: 2.4rem;
 }
 
@@ -293,7 +294,7 @@ a { color: var(--gold-2); }
   font-size: 0.6rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   margin-bottom: 0.35rem;
 }
 .host-name { font-size: 1.1rem; color: var(--cream); }
@@ -322,14 +323,14 @@ a { color: var(--gold-2); }
   top: 0.62rem;
   width: 9px;
   height: 9px;
-  background: var(--gold);
+  background: var(--metal);
   transform: rotate(45deg);
 }
 .tl-time {
   font-family: var(--engrave);
   font-size: 0.68rem;
   letter-spacing: 0.22em;
-  color: var(--gold-2);
+  color: var(--metal-2);
   font-variant-numeric: tabular-nums;
 }
 .tl-title { font-size: 1.14rem; color: var(--cream); margin-top: 0.1rem; }
@@ -342,7 +343,7 @@ a { color: var(--gold-2); }
   font-size: 0.62rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   text-align: center;
   margin-bottom: 1.4rem;
 }
@@ -365,7 +366,7 @@ a { color: var(--gold-2); }
   font-size: 0.54rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--metal);
   margin-top: 0.4rem;
 }
 
@@ -376,7 +377,7 @@ a { color: var(--gold-2); }
   font-size: 0.62rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   margin-bottom: 0.6rem;
 }
 .venue-name { font-family: var(--engrave); font-size: 1.15rem; letter-spacing: 0.05em; color: var(--foil); }
@@ -394,10 +395,10 @@ a { color: var(--gold-2); }
   padding: 9px 14px;
   transition: background 0.25s ease, color 0.25s ease;
 }
-.maplink:hover { background: var(--gold); color: var(--midnight); border-color: var(--gold); }
+.maplink:hover { background: var(--metal); color: var(--midnight); border-color: var(--metal); }
 
 .swatches { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.1rem; }
-.swatch { text-align: center; width: 74px; }
+.swatch { text-align: center; width: 96px; }   /* fits a two-word colour name on one line */
 .swatch i {
   display: block;
   width: 42px;
@@ -437,7 +438,7 @@ a { color: var(--gold-2); }
   font-size: 0.6rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
 }
 input[type="text"], input[type="number"], textarea, select {
   width: 100%;
@@ -450,7 +451,7 @@ input[type="text"], input[type="number"], textarea, select {
   transition: border-color 0.25s ease;
 }
 input::placeholder, textarea::placeholder { color: rgba(147, 154, 184, 0.6); font-style: italic; }
-input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+input:focus, textarea:focus, select:focus { border-color: var(--metal); }
 textarea { resize: vertical; min-height: 92px; }
 
 fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55rem; }
@@ -466,8 +467,8 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 .choice:hover { border-color: var(--line); }
-.choice input { accent-color: var(--gold); margin: 0; }
-.choice:has(input:checked) { border-color: var(--gold); background: rgba(201, 162, 39, 0.09); }
+.choice input { accent-color: var(--metal); margin: 0; }
+.choice:has(input:checked) { border-color: var(--metal); background: rgba(194, 204, 219, 0.10); }
 
 .hint { font-size: 0.94rem; color: var(--muted); font-style: italic; margin: -0.5rem 0 1.2rem; }
 
@@ -482,7 +483,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--midnight);
-  background: linear-gradient(160deg, var(--foil) 0%, var(--gold-2) 45%, var(--gold) 100%);
+  background: linear-gradient(160deg, var(--foil) 0%, var(--metal-2) 45%, var(--metal) 100%);
   padding: 15px 20px;
   transition: filter 0.25s ease;
 }
@@ -511,7 +512,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
   font-size: 0.62rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   text-align: center;
   margin: 0;
 }
@@ -536,7 +537,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
   padding: 13px 12px;
   transition: background 0.25s ease, color 0.25s ease;
 }
-.send-btn:hover { background: var(--gold); color: var(--midnight); border-color: var(--gold); }
+.send-btn:hover { background: var(--metal); color: var(--midnight); border-color: var(--metal); }
 .send-foot { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .send-foot .btn-quiet { margin-top: 0; }
 .send-call { text-align: center; }
@@ -544,7 +545,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 .status.err { color: #E8A0A0; }
 
 .thanks { text-align: center; }
-.thanks .mark { font-family: var(--display); font-size: 3rem; color: var(--gold-2); line-height: 1.1; }
+.thanks .mark { font-family: var(--display); font-size: 3rem; color: var(--metal-2); line-height: 1.1; }
 
 .tally {
   font-family: var(--engrave);
@@ -560,7 +561,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 /* ---------- wishes ---------- */
 .wishes { display: grid; gap: 1rem; }
 .wish {
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--metal);
   background: rgba(20, 28, 54, 0.4);
   padding: 16px 18px;
 }
@@ -570,7 +571,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-2);
+  color: var(--metal-2);
   margin-top: 0.6rem;
 }
 .wishes-empty { color: var(--muted); font-style: italic; text-align: center; }
@@ -588,6 +589,63 @@ footer {
   color: var(--foil);
 }
 .footnote { font-size: 0.92rem; color: var(--muted); margin-top: 0.8rem; font-style: italic; }
+
+/* ---------- music toggle ---------- */
+.player {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.player-btn {
+  appearance: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--foil);
+  border: 1px solid var(--line);
+  background: rgba(13, 18, 37, 0.82);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.player-btn:hover { background: var(--metal); color: var(--midnight); border-color: var(--metal); }
+.player-btn svg { display: block; }
+.player-title {
+  font-family: var(--engrave);
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* a quiet ring while the song is playing */
+.player.is-playing .player-btn { border-color: var(--metal); }
+.player.is-playing .player-btn::after {
+  content: "";
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--metal);
+  animation: ripple 2.8s ease-out infinite;
+  pointer-events: none;
+}
+.player-btn { position: relative; }
+@keyframes ripple {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+@media (max-width: 560px) { .player-title { display: none; } }
 
 /* ============================================================
    The envelope gate — the first thing a guest sees. Clicking the
@@ -657,13 +715,13 @@ body.gated { overflow: hidden; }
   font-size: 0.56rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #8C6E1C;
+  color: #6B7486;
 }
 .letter-name {
   font-family: var(--display);
   font-size: clamp(2rem, 9vw, 2.9rem);
   line-height: 1.2;
-  color: #6E520F;
+  color: #3E4654;
   margin-top: 0.3rem;
 }
 .letter-date {
@@ -671,7 +729,7 @@ body.gated { overflow: hidden; }
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #4A3A2A;
+  color: #5A6474;
   margin-top: 0.5rem;
 }
 
@@ -682,8 +740,8 @@ body.gated { overflow: hidden; }
   z-index: 3;
   transform: translateZ(2px);
   background:
-    linear-gradient(150deg, transparent calc(50% - 1px), rgba(201, 162, 39, 0.18) 50%, transparent calc(50% + 1px)),
-    linear-gradient(210deg, transparent calc(50% - 1px), rgba(201, 162, 39, 0.18) 50%, transparent calc(50% + 1px)),
+    linear-gradient(150deg, transparent calc(50% - 1px), rgba(194, 204, 219, 0.16) 50%, transparent calc(50% + 1px)),
+    linear-gradient(210deg, transparent calc(50% - 1px), rgba(194, 204, 219, 0.16) 50%, transparent calc(50% + 1px)),
     linear-gradient(172deg, #1A1130, #0B1024);
   border: 1px solid var(--line);
 }
@@ -718,18 +776,18 @@ body.gated { overflow: hidden; }
   font-size: clamp(0.78rem, 2.6vw, 0.98rem);
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #33220A;
-  background: radial-gradient(circle at 34% 28%, #FBF0CE, #D4AF5C 48%, #A8821E 78%, #7C5D12);
+  color: #2A3140;
+  background: radial-gradient(circle at 34% 28%, #FDFEFF, #CBD5E3 48%, #8C95A6 78%, #5E6675);
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.55),
-    inset 0 -3px 7px rgba(70, 48, 6, 0.55),
-    inset 0 3px 7px rgba(255, 246, 222, 0.5);
+    inset 0 -3px 7px rgba(42, 49, 64, 0.5),
+    inset 0 3px 7px rgba(255, 255, 255, 0.55);
   animation: sealbreathe 3.4s ease-in-out infinite;
   transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.5, -0.4, 0.6, 1);
 }
 @keyframes sealbreathe {
-  0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(70,48,6,0.55), inset 0 3px 7px rgba(255,246,222,0.5), 0 0 0 0 rgba(217,188,99,0.34); }
-  55%      { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(70,48,6,0.55), inset 0 3px 7px rgba(255,246,222,0.5), 0 0 0 14px rgba(217,188,99,0); }
+  0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(42,49,64,0.5), inset 0 3px 7px rgba(255,255,255,0.55), 0 0 0 0 rgba(221,229,241,0.34); }
+  55%      { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(42,49,64,0.5), inset 0 3px 7px rgba(255,255,255,0.55), 0 0 0 14px rgba(221,229,241,0); }
 }
 
 .gate-hint {
@@ -806,12 +864,12 @@ body.gated { overflow: hidden; }
       <svg class="seal" viewBox="0 0 100 100" role="img" aria-labelledby="seal-title">
         <title id="seal-title">Monograma</title>
         <g class="seal-ring">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A227" stroke-width="0.7" stroke-dasharray="1 5" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#A3B1C6" stroke-width="0.7" stroke-dasharray="1 5" stroke-linecap="round"/>
         </g>
-        <circle cx="50" cy="50" r="38" fill="none" stroke="#C9A227" stroke-width="0.9" opacity="0.75"/>
-        <circle cx="50" cy="50" r="35" fill="none" stroke="#D9BC63" stroke-width="0.4" opacity="0.5"/>
-        <text id="seal-initials" x="50" y="58" text-anchor="middle" font-family="Cinzel, serif" font-size="23" font-weight="600" fill="#F4E6BE" letter-spacing="1">IS</text>
-        <path d="M50 12 l2.2 3.6 L54.4 12 M50 88 l2.2 -3.6 L54.4 88" fill="none" stroke="#C9A227" stroke-width="0.8"/>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#A3B1C6" stroke-width="0.9" opacity="0.75"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#AFBFD6" stroke-width="0.4" opacity="0.5"/>
+        <text id="seal-initials" x="50" y="58" text-anchor="middle" font-family="Cinzel, serif" font-size="23" font-weight="600" fill="#F5F9FF" letter-spacing="1">IS</text>
+        <path d="M50 12 l2.2 3.6 L54.4 12 M50 88 l2.2 -3.6 L54.4 88" fill="none" stroke="#A3B1C6" stroke-width="0.8"/>
       </svg>
 
       <p class="eyebrow" data-i18n="hero.kicker">Mis Quince Años</p>
@@ -838,7 +896,7 @@ body.gated { overflow: hidden; }
 
   <div class="fleuron" aria-hidden="true">
     <span class="rule"></span>
-    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
     <span class="rule"></span>
   </div>
 
@@ -861,7 +919,7 @@ body.gated { overflow: hidden; }
 
   <div class="fleuron" aria-hidden="true">
     <span class="rule"></span>
-    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
     <span class="rule"></span>
   </div>
 
@@ -929,7 +987,7 @@ body.gated { overflow: hidden; }
 
   <div class="fleuron" aria-hidden="true">
     <span class="rule"></span>
-    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
     <span class="rule"></span>
   </div>
 
@@ -1019,6 +1077,21 @@ body.gated { overflow: hidden; }
     </div>
   </section>
 
+  <div class="player" id="player" hidden>
+    <button type="button" class="player-btn" id="player-toggle" aria-pressed="false">
+      <svg id="icon-play" width="15" height="17" viewBox="0 0 15 17" aria-hidden="true">
+        <path d="M2 1.4 L13.4 8.5 L2 15.6 Z" fill="currentColor"/>
+      </svg>
+      <svg id="icon-pause" width="14" height="16" viewBox="0 0 14 16" aria-hidden="true" hidden>
+        <rect x="1.5" y="1" width="3.6" height="14" fill="currentColor"/>
+        <rect x="8.9" y="1" width="3.6" height="14" fill="currentColor"/>
+      </svg>
+      <span class="sr-only" id="player-label">Reproducir música</span>
+    </button>
+    <span class="player-title" id="player-title"></span>
+  </div>
+  <audio id="song" loop preload="auto"></audio>
+
   <footer>
     <div class="hashtag" id="hashtag">#LosXVdeIsabella</div>
     <p class="footnote" data-i18n="footer.note">Comparte tus fotos de la noche con este hashtag.</p>
@@ -1076,6 +1149,16 @@ const CONFIG = {
   registry: [],
 
   hashtag: "#LosXVdeAshley",
+
+  // --- Background music. Drop an .mp3 into the audio/ folder and point
+  //     `src` at it. Set `src` to "" to remove the player entirely.
+  //     The song starts when a guest opens the envelope — that click is
+  //     what lets a browser play sound at all — and loops quietly. ---
+  music: {
+    src: "audio/song.mp3",
+    title: "",          // optional, shown as the button's tooltip
+    volume: 0.5
+  },
 
   // --- RSVP contact, used when the page runs outside claude.ai (e.g. GitHub
   //     Pages) and cannot save responses itself. The guest then picks how to
@@ -1183,6 +1266,8 @@ const T = {
     "wishes.sub": "Mensajes de quienes ya confirmaron",
     "wishes.empty": "Aún no hay mensajes. Deja el primero al confirmar tu asistencia.",
     "footer.note": "Comparte tus fotos de la noche con este hashtag.",
+    "music.play": "Reproducir música",
+    "music.pause": "Pausar música",
     "weekdays": ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
     "months": ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"]
   },
@@ -1252,6 +1337,8 @@ const T = {
     "wishes.sub": "Messages from guests who have replied",
     "wishes.empty": "No messages yet. Leave the first one when you RSVP.",
     "footer.note": "Share your photos from the night with this hashtag.",
+    "music.play": "Play music",
+    "music.pause": "Pause music",
     "weekdays": ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
     "months": ["January","February","March","April","May","June","July","August","September","October","November","December"]
   }
@@ -1374,7 +1461,7 @@ const DEADLINE = parseLocal(CONFIG.rsvpBy);
       const twinkle = animate ? (0.72 + Math.sin(m.phase * 1.7) * 0.28) : 1;
       ctx.beginPath();
       ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(217, 188, 99, " + (m.a * twinkle).toFixed(3) + ")";
+      ctx.fillStyle = "rgba(214, 223, 238, " + (m.a * twinkle).toFixed(3) + ")";
       ctx.fill();
     }
     if (animate) raf = requestAnimationFrame(() => paint(true));
@@ -1565,6 +1652,7 @@ function applyLanguage() {
   renderWishes(lastWishes);
   updateTally(lastTally);
   updateModeNote();
+  music.relabel();
   // The send panel's links carry a composed message, so rebuild it in the new language.
   if (pendingReply && !$("#send-options").hidden) showSendOptions(pendingReply);
   if (savedReply) showThanks(savedReply.attending);
@@ -1848,7 +1936,92 @@ function updateTally(guests) {
 })();
 
 /* ============================================================
-   8. The envelope gate
+   8. Background music
+   A browser will not play sound until the visitor interacts with the
+   page, so the song starts on the click that opens the envelope. If
+   that is still refused, the control simply sits in its paused state.
+   ============================================================ */
+const music = (function () {
+  const settings = CONFIG.music || {};
+  const player = $("#player");
+  const audio = $("#song");
+  const toggle = $("#player-toggle");
+  const target = typeof settings.volume === "number" ? settings.volume : 0.5;
+
+  let ready = false;
+  let unveiled = false;      // the gate has been opened
+  let fade = null;
+
+  function setState(playing) {
+    player.classList.toggle("is-playing", playing);
+    toggle.setAttribute("aria-pressed", String(playing));
+    $("#icon-play").hidden = playing;
+    $("#icon-pause").hidden = !playing;
+    const label = playing ? t("music.pause") : t("music.play");
+    $("#player-label").textContent = label;
+    toggle.setAttribute("aria-label", label);
+    toggle.title = settings.title ? settings.title + " — " + label : label;
+  }
+
+  function fadeTo(to, ms) {
+    clearInterval(fade);
+    const from = audio.volume;
+    const steps = Math.max(1, Math.round(ms / 50));
+    let step = 0;
+    fade = setInterval(() => {
+      step += 1;
+      audio.volume = Math.min(1, Math.max(0, from + (to - from) * (step / steps)));
+      if (step >= steps) clearInterval(fade);
+    }, 50);
+  }
+
+  function show() {
+    if (ready && unveiled) player.hidden = false;
+  }
+
+  function play() {
+    return audio.play().then(() => {
+      fadeTo(target, 1400);
+      setState(true);
+      store("quince.music", "on");
+    }).catch(() => setState(false));
+  }
+
+  if (settings.src) {
+    audio.volume = 0;
+    audio.src = settings.src;
+    audio.addEventListener("canplay", () => { ready = true; show(); });
+    // No file yet, or an unplayable one: leave the control out of the page.
+    audio.addEventListener("error", () => { ready = false; player.hidden = true; });
+  }
+
+  toggle.addEventListener("click", () => {
+    if (audio.paused) {
+      play();
+    } else {
+      audio.pause();
+      setState(false);
+      store("quince.music", "off");
+    }
+  });
+
+  $("#player-title").textContent = settings.title || "";
+  setState(false);
+
+  return {
+    start() {
+      unveiled = true;
+      show();
+      if (!settings.src) return;
+      if (store("quince.music") === "off") return;   // they turned it off before
+      play();
+    },
+    relabel() { setState(!audio.paused); }
+  };
+})();
+
+/* ============================================================
+   9. The envelope gate
    ============================================================ */
 (function gate() {
   const gate = $("#gate");
@@ -1863,6 +2036,7 @@ function updateTally(guests) {
     if (opened) return;
     opened = true;
     gate.classList.add("opening");
+    music.start();
 
     // Long enough for the seal to break, the flap to lift and the letter to rise.
     const sequence = reduced ? 160 : 2250;

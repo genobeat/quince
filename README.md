@@ -10,9 +10,14 @@ itinerary, the court of honor, venue and dress-code details, a gift registry,
 and RSVP with a live wishes wall. Fully bilingual (Spanish / English) with a
 language toggle that remembers the guest's choice.
 
-The design is a committed single visual world — midnight navy and foil gold,
-Pinyon Script for the name, Cinzel for engraved headings, Cormorant Garamond
-for body copy — so it reads the same on any device or host theme.
+The design is a committed single visual world — midnight navy and brushed
+silver, Pinyon Script for the name, Cinzel for engraved headings, Cormorant
+Garamond for body copy — so it reads the same on any device or host theme.
+
+The metal is three tokens at the top of the stylesheet: `--metal`, `--metal-2`
+and `--foil`. They are named for the role rather than the colour, so changing
+the whole page to gold or rose gold is an edit to those three values (plus the
+seal's own gradient in `.seal-btn`).
 
 ## Files
 
@@ -21,6 +26,7 @@ for body copy — so it reads the same on any device or host theme.
 | `src/page.html` | **The source of truth.** Edit this file. |
 | `index.html` | Generated. A complete HTML5 document for static hosting. |
 | `scripts/build.sh` | Wraps `src/page.html` into `index.html`. |
+| `audio/` | Drop `song.mp3` here to give the page background music. |
 
 After editing `src/page.html`, run:
 
@@ -56,6 +62,8 @@ Everything about the event lives in one `CONFIG` object near the top of the
 - `itinerary` — each entry has `time`, `es`, `en`, and optional `noteEs`/`noteEn`
 - `whatsapp`, `email` — used by the fallback RSVP mode below
 - `hashtag`
+- `music` — `src` points at the song (`audio/song.mp3`); `""` removes the
+  player. `title` is an optional label, `volume` is 0–1. See `audio/README.md`.
 
 Two things outside `CONFIG` are worth updating too:
 
@@ -70,8 +78,20 @@ The page renders cleanly with these blank, but they are the open items:
 - **Times.** The reception is set to 6:00 pm and the rest of the itinerary
   follows from it. Every time in `CONFIG.itinerary` is a placeholder.
 - **Registry.** `registry` is empty, so only the lluvia de sobres shows.
-- **Email.** `email` is empty, so the RSVP panel offers WhatsApp, text message
-  and copy-to-paste but no email option. Add an address to turn it on.
+- **The song.** `audio/song.mp3` does not exist yet, so no player appears.
+
+## Music
+
+A browser will not play sound until the visitor interacts with the page, so the
+song starts on the click that opens the envelope — the one gesture every guest
+makes. It loops at half volume and fades in over about a second.
+
+A control sits in the bottom-right corner to pause and resume. If a guest
+pauses it, that choice is remembered on their device and the song does not
+start itself again on a later visit.
+
+The player hides itself when `music.src` is empty or the file is missing or
+unplayable, so a missing song never breaks the page.
 
 ## How RSVP works
 
