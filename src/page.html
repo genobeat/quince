@@ -1,4 +1,4 @@
-<title>Los XV de Isabella</title>
+<title>Los XV de Ashley</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Pinyon+Script&display=swap">
@@ -525,6 +525,171 @@ footer {
 }
 .footnote { font-size: 0.92rem; color: var(--muted); margin-top: 0.8rem; font-style: italic; }
 
+/* ============================================================
+   The envelope gate — the first thing a guest sees. Clicking the
+   wax seal breaks it, lifts the flap, and draws the letter out.
+   ============================================================ */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+body.gated { overflow: hidden; }
+
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 2.4rem;
+  padding: 26px;
+  background:
+    radial-gradient(50rem 36rem at 50% 38%, rgba(42, 27, 61, 0.9), transparent 72%),
+    var(--midnight);
+  transition: opacity 0.8s ease;
+}
+.gate.gone { opacity: 0; pointer-events: none; }
+.gate-lang { position: absolute; top: 14px; right: 22px; }
+
+.env-stage { perspective: 1400px; }
+
+.env {
+  position: relative;
+  width: min(84vw, 420px);
+  aspect-ratio: 1.52 / 1;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* the inside of the envelope, seen once the flap lifts */
+.env-liner {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform: translateZ(0px);
+  background: linear-gradient(168deg, #221636, #0D1225);
+  border: 1px solid var(--line);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
+}
+
+.letter {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 7%;
+  z-index: 2;
+  padding: clamp(16px, 4vw, 24px) 16px;
+  text-align: center;
+  background: linear-gradient(170deg, #F6F0E2, #E7DDC8);
+  color: #2A1B3D;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  transform: translateY(5%) translateZ(1px) scale(0.97);
+  transition: transform 1s cubic-bezier(0.22, 0.9, 0.3, 1) 0.5s;
+}
+.letter-eyebrow {
+  font-family: var(--engrave);
+  font-size: 0.56rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #8C6E1C;
+}
+.letter-name {
+  font-family: var(--display);
+  font-size: clamp(2rem, 9vw, 2.9rem);
+  line-height: 1.2;
+  color: #6E520F;
+  margin-top: 0.3rem;
+}
+.letter-date {
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4A3A2A;
+  margin-top: 0.5rem;
+}
+
+/* the front face, which hides the letter until the envelope opens */
+.env-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  transform: translateZ(2px);
+  background:
+    linear-gradient(150deg, transparent calc(50% - 1px), rgba(201, 162, 39, 0.18) 50%, transparent calc(50% + 1px)),
+    linear-gradient(210deg, transparent calc(50% - 1px), rgba(201, 162, 39, 0.18) 50%, transparent calc(50% + 1px)),
+    linear-gradient(172deg, #1A1130, #0B1024);
+  border: 1px solid var(--line);
+}
+
+.env-flap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 62%;
+  z-index: 4;
+  transform-origin: top center;
+  transform: translateZ(3px) rotateX(0deg);
+  transition: transform 1.05s cubic-bezier(0.62, 0.02, 0.3, 1) 0.28s;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(178deg, #241738, #150E2A 62%, #100B22);
+  border-top: 1px solid var(--line);
+}
+
+.seal-btn {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  z-index: 7;
+  transform: translate(-50%, -50%) translateZ(10px);
+  width: clamp(64px, 18vw, 86px);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-family: var(--engrave);
+  font-size: clamp(0.78rem, 2.6vw, 0.98rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #33220A;
+  background: radial-gradient(circle at 34% 28%, #FBF0CE, #D4AF5C 48%, #A8821E 78%, #7C5D12);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.55),
+    inset 0 -3px 7px rgba(70, 48, 6, 0.55),
+    inset 0 3px 7px rgba(255, 246, 222, 0.5);
+  animation: sealbreathe 3.4s ease-in-out infinite;
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.5, -0.4, 0.6, 1);
+}
+@keyframes sealbreathe {
+  0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(70,48,6,0.55), inset 0 3px 7px rgba(255,246,222,0.5), 0 0 0 0 rgba(217,188,99,0.34); }
+  55%      { box-shadow: 0 8px 20px rgba(0,0,0,0.55), inset 0 -3px 7px rgba(70,48,6,0.55), inset 0 3px 7px rgba(255,246,222,0.5), 0 0 0 14px rgba(217,188,99,0); }
+}
+
+.gate-hint {
+  font-family: var(--engrave);
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+  animation: hintfade 3.4s ease-in-out infinite;
+}
+@keyframes hintfade { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+/* --- the opening sequence --- */
+.gate.opening .seal-btn {
+  opacity: 0;
+  transform: translate(-50%, -50%) translateZ(10px) scale(1.45) rotate(-14deg);
+  animation: none;
+}
+.gate.opening .env-flap { transform: translateZ(3px) rotateX(-172deg); }
+.gate.opening .letter { transform: translateY(-56%) translateZ(22px) scale(1); }
+.gate.opening .gate-hint { opacity: 0; animation: none; transition: opacity 0.4s ease; }
+.gate.opening .env { cursor: default; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -536,6 +701,32 @@ footer {
 
 <canvas id="dust" aria-hidden="true"></canvas>
 <div class="ground" aria-hidden="true"></div>
+
+<div class="gate" id="gate">
+  <div class="langswitch gate-lang" role="group" aria-label="Idioma / Language">
+    <button type="button" id="gate-lang-es" data-lang="es" aria-pressed="true">ES</button>
+    <button type="button" id="gate-lang-en" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+
+  <div class="env-stage">
+    <div class="env" id="env">
+      <div class="env-liner"></div>
+      <div class="letter">
+        <div class="letter-eyebrow" data-i18n="gate.kicker">Mis Quince Años</div>
+        <div class="letter-name" id="gate-name">Ashley Camila</div>
+        <div class="letter-date" id="gate-date">30 de octubre de 2026</div>
+      </div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <button type="button" class="seal-btn" id="gate-open" aria-describedby="gate-hint">
+        <span aria-hidden="true" id="gate-initials">ACV</span>
+        <span class="sr-only" data-i18n="gate.open">Abrir invitación</span>
+      </button>
+    </div>
+  </div>
+
+  <p class="gate-hint" id="gate-hint" data-i18n="gate.hint">Toca el sello para abrir</p>
+</div>
 
 <div class="page">
   <div class="topbar">
@@ -592,11 +783,11 @@ footer {
     <div class="wrap center">
       <p class="verse" data-i18n="invite.verse">Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.</p>
       <div class="hosts">
-        <div>
+        <div id="hosts-parents">
           <div class="host-role" data-i18n="invite.parents">Mis padres</div>
           <div class="host-name" id="host-parents">Carlos Ramírez Ibarra y Adriana Delgado Ontiveros</div>
         </div>
-        <div>
+        <div id="hosts-godparents">
           <div class="host-role" data-i18n="invite.godparents">Mis padrinos</div>
           <div class="host-name" id="host-godparents">Miguel Ángel Delgado y Rosa María Ontiveros</div>
         </div>
@@ -643,7 +834,7 @@ footer {
         <p class="sub" data-i18n="details.sub">Dónde, cómo vestir y la mesa de regalos</p>
       </div>
 
-      <div class="detail">
+      <div class="detail" id="mass-block">
         <div class="detail-kicker" data-i18n="details.mass">La misa</div>
         <div class="venue-name" id="mass-name">Parroquia de San Judas Tadeo</div>
         <div class="venue-addr" id="mass-addr">Av. Hidalgo 412, Centro · 5:00 pm</div>
@@ -764,27 +955,26 @@ footer {
    ============================================================ */
 const CONFIG = {
   // --- The quinceañera ---
-  firstName: "Isabella",
-  lastName: "Ramírez Delgado",
-  initials: "IS",
+  firstName: "Ashley Camila",
+  lastName: "Valdez",
+  initials: "ACV",
 
-  // --- When. Local time, 24h. ---
-  massTime:  "2027-04-17T17:00:00",
-  partyTime: "2027-04-17T18:30:00",
-  rsvpBy:    "2027-03-20T23:59:00",
+  // --- When. Local time, 24h.
+  //     massTime: set to null when there is no church service, or give it a
+  //     time to switch the Mass back on everywhere it appears. ---
+  massTime:  null,
+  partyTime: "2026-10-30T18:00:00",
+  rsvpBy:    "2026-09-30T23:59:00",
 
   // --- Who is hosting ---
-  parents:    "Carlos Ramírez Ibarra y Adriana Delgado Ontiveros",
-  godparents: "Miguel Ángel Delgado y Rosa María Ontiveros",
+  parents:    "",
+  godparents: "",
 
-  // --- Where ---
-  mass: {
-    name: "Parroquia de San Judas Tadeo",
-    address: "Av. Hidalgo 412, Centro, Guadalajara, Jal."
-  },
+  // --- Where. `mass: null` hides the Mass section entirely. ---
+  mass: null,
   party: {
-    name: "Salón Jardín Casa Aurora",
-    address: "Camino a Los Olivos 78, Lomas del Valle, Zapopan, Jal."
+    name: "LUXOR Wedding & Event",
+    address: ""
   },
 
   // --- Dress code ---
@@ -794,47 +984,37 @@ const CONFIG = {
   },
 
   // --- Gift registry. Leave the array empty to show only the envelope shower. ---
-  registry: [
-    { label: "Liverpool", url: "https://mesaderegalos.liverpool.com.mx" },
-    { label: "Amazon",    url: "https://www.amazon.com.mx/wedding/registry" }
-  ],
+  registry: [],
 
-  hashtag: "#LosXVdeIsabella",
+  hashtag: "#LosXVdeAshley",
 
   // --- Fallback RSVP, used when the page runs outside claude.ai
   //     (e.g. GitHub Pages) and cannot save responses itself. ---
   whatsapp: "+521234567890",   // international format, digits after the +
   email: "xv.isabella@example.com",
 
-  // --- The court. Mark one person `honor: true` for chambelán/dama de honor. ---
+  // --- The court. Add plain strings, or { name: "...", honor: true } to
+  //     mark the dama/chambelán de honor. While both lists are empty the
+  //     page shows a "to be announced" note instead. ---
   court: {
-    damas: [
-      "Valentina Cruz Mora", "Camila Orozco Lira", "Renata Villalobos Sáenz",
-      "Ximena Aguilar Ponce", "Daniela Peña Lugo", "Mariana Solís Tovar",
-      "Andrea Fuentes Gil"
-    ],
-    chambelanes: [
-      { name: "Emiliano Ruiz Alcántara", honor: true },
-      "Diego Ferrer Naranjo", "Sebastián Nava Cortés", "Andrés Quintero Ríos",
-      "Leonardo Vega Maldonado", "Mateo Barrios Zepeda", "Rodrigo Iñiguez Paz"
-    ]
+    damas: [],
+    chambelanes: []
   },
 
   // --- The run of the evening ---
   itinerary: [
-    { time: "17:00", es: "Misa de acción de gracias", en: "Thanksgiving Mass",
-      noteEs: "Parroquia de San Judas Tadeo", noteEn: "San Judas Tadeo Parish" },
-    { time: "18:30", es: "Recepción y cóctel", en: "Reception & cocktails",
-      noteEs: "Casa Aurora abre sus puertas", noteEn: "Doors open at Casa Aurora" },
-    { time: "19:15", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
+    { time: "18:00", es: "Recepción y cóctel", en: "Reception & cocktails",
+      noteEs: "LUXOR abre sus puertas", noteEn: "Doors open at LUXOR" },
+    { time: "18:45", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
       noteEs: "", noteEn: "" },
-    { time: "19:30", es: "Vals y baile sorpresa", en: "Waltz & surprise dance",
+    { time: "19:00", es: "Vals y baile sorpresa", en: "Waltz & surprise dance",
       noteEs: "Con mi padre y los chambelanes", noteEn: "With my father and the chambelanes" },
-    { time: "20:00", es: "Cena", en: "Dinner", noteEs: "", noteEn: "" },
-    { time: "21:00", es: "Última muñeca y cambio de zapatillas", en: "Last doll & changing of the shoes",
+    { time: "19:30", es: "Cena", en: "Dinner", noteEs: "", noteEn: "" },
+    { time: "20:30", es: "Última muñeca y cambio de zapatillas", en: "Last doll & changing of the shoes",
       noteEs: "El momento que lo cambia todo", noteEn: "The moment everything changes" },
-    { time: "21:30", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
-    { time: "22:00", es: "Baile", en: "Dancing", noteEs: "Hasta que apaguen las luces", noteEn: "Until they turn the lights off" },
+    { time: "21:00", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
+    { time: "21:30", es: "Baile", en: "Dancing",
+      noteEs: "Hasta que apaguen las luces", noteEn: "Until they turn the lights off" },
     { time: "01:00", es: "Despedida", en: "Farewell", noteEs: "", noteEn: "" }
   ]
 };
@@ -844,6 +1024,9 @@ const CONFIG = {
    ============================================================ */
 const T = {
   es: {
+    "gate.kicker": "Mis Quince Años",
+    "gate.hint": "Toca el sello para abrir",
+    "gate.open": "Abrir invitación",
     "hero.kicker": "Mis Quince Años",
     "cd.days": "Días", "cd.hours": "Horas", "cd.minutes": "Min", "cd.seconds": "Seg",
     "cd.today": "¡Hoy es el día!",
@@ -858,6 +1041,7 @@ const T = {
     "court.chambelanes": "Chambelanes",
     "court.honorMan": "Chambelán de honor",
     "court.honorWoman": "Dama de honor",
+    "court.tbd": "Los nombres de la corte se anunciarán muy pronto.",
     "details.kicker": "Lo que necesitas saber",
     "details.title": "Detalles",
     "details.sub": "Dónde, cómo vestir y la mesa de regalos",
@@ -887,7 +1071,7 @@ const T = {
     "rsvp.needName": "Escribe tu nombre para confirmar.",
     "rsvp.failed": "No se pudo guardar. Inténtalo otra vez en un momento.",
     "rsvp.full": "La lista de confirmaciones está llena. Avísanos por WhatsApp.",
-    "rsvp.thanksYes": "Te esperamos el 17 de abril.",
+    "rsvp.thanksYes": "Te esperamos el {date}.",
     "rsvp.thanksNo": "Gracias por avisarnos. Te vamos a extrañar.",
     "rsvp.whatsappMode": "Al enviar se abrirá WhatsApp con tu confirmación lista.",
     "rsvp.tally": "{guests} invitados confirmados",
@@ -900,6 +1084,9 @@ const T = {
     "months": ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"]
   },
   en: {
+    "gate.kicker": "My Quinceañera",
+    "gate.hint": "Tap the seal to open",
+    "gate.open": "Open invitation",
     "hero.kicker": "My Quinceañera",
     "cd.days": "Days", "cd.hours": "Hours", "cd.minutes": "Min", "cd.seconds": "Sec",
     "cd.today": "Today is the day!",
@@ -914,6 +1101,7 @@ const T = {
     "court.chambelanes": "Chambelanes",
     "court.honorMan": "Chambelán de honor",
     "court.honorWoman": "Dama de honor",
+    "court.tbd": "The names of the court will be announced soon.",
     "details.kicker": "What you need to know",
     "details.title": "Details",
     "details.sub": "Where to go, what to wear, and the registry",
@@ -943,7 +1131,7 @@ const T = {
     "rsvp.needName": "Add your name to send your RSVP.",
     "rsvp.failed": "That didn't save. Try again in a moment.",
     "rsvp.full": "The guest list is full. Let us know on WhatsApp instead.",
-    "rsvp.thanksYes": "We'll see you on April 17th.",
+    "rsvp.thanksYes": "We'll see you on {date}.",
     "rsvp.thanksNo": "Thank you for letting us know. You'll be missed.",
     "rsvp.whatsappMode": "Sending opens WhatsApp with your RSVP ready to go.",
     "rsvp.tally": "{guests} guests confirmed",
@@ -1010,8 +1198,9 @@ function el(tag, className, text) {
   return n;
 }
 
-const MASS  = parseLocal(CONFIG.massTime);
+const MASS  = CONFIG.massTime ? parseLocal(CONFIG.massTime) : null;
 const PARTY = parseLocal(CONFIG.partyTime);
+const MAIN  = MASS || PARTY;          // whichever moment opens the day
 const DEADLINE = parseLocal(CONFIG.rsvpBy);
 
 /* ============================================================
@@ -1078,7 +1267,7 @@ const DEADLINE = parseLocal(CONFIG.rsvpBy);
    5. Render everything that comes from CONFIG
    ============================================================ */
 function mapLinks(place) {
-  const q = encodeURIComponent(place.name + ", " + place.address);
+  const q = encodeURIComponent(place.address ? place.name + ", " + place.address : place.name);
   return [
     { key: "map.google", url: "https://www.google.com/maps/search/?api=1&query=" + q },
     { key: "map.apple",  url: "https://maps.apple.com/?q=" + q },
@@ -1115,10 +1304,25 @@ function renderItinerary() {
 
 function renderCourt() {
   const box = $("#court-groups");
+  const sub = document.querySelector("#court .sub");
+  const damas = CONFIG.court.damas || [];
+  const chambelanes = CONFIG.court.chambelanes || [];
   box.textContent = "";
+
+  if (!damas.length && !chambelanes.length) {
+    sub.textContent = "";
+    box.appendChild(el("p", "wishes-empty", t("court.tbd")));
+    return;
+  }
+
+  const total = damas.length + chambelanes.length;
+  sub.textContent = lang === "es"
+    ? total + " amigos, y yo la quinceava"
+    : total + " friends, and me as the fifteenth";
+
   const groups = [
-    { label: t("court.damas"), people: CONFIG.court.damas, honorKey: "court.honorWoman" },
-    { label: t("court.chambelanes"), people: CONFIG.court.chambelanes, honorKey: "court.honorMan" }
+    { label: t("court.damas"), people: damas, honorKey: "court.honorWoman" },
+    { label: t("court.chambelanes"), people: chambelanes, honorKey: "court.honorMan" }
   ];
   for (const group of groups) {
     if (!group.people || !group.people.length) continue;
@@ -1140,6 +1344,7 @@ function renderCourt() {
 function renderRegistry() {
   const box = $("#registry");
   box.textContent = "";
+  if (!CONFIG.registry || !CONFIG.registry.length) return;
   for (const r of CONFIG.registry) {
     const a = el("a", "maplink", r.label);
     a.href = r.url;
@@ -1166,25 +1371,34 @@ function applyLanguage() {
   $("#hero-name").textContent = CONFIG.firstName;
   $("#hero-surname").textContent = CONFIG.lastName;
   $("#seal-initials").textContent = CONFIG.initials;
-  $("#hero-weekday").textContent = weekdayOf(MASS);
-  $("#hero-date").textContent = formatDate(MASS);
-  $("#hero-time").textContent = formatTime(MASS);
+  $("#hero-weekday").textContent = weekdayOf(MAIN);
+  $("#hero-date").textContent = formatDate(MAIN);
+  $("#hero-time").textContent = formatTime(MAIN);
+
+  // The gate is removed from the page once it has been opened.
+  if ($("#gate")) {
+    $("#gate-name").textContent = CONFIG.firstName;
+    $("#gate-date").textContent = formatDate(MAIN);
+    $("#gate-initials").textContent = CONFIG.initials;
+  }
+
+  // The hosting lines only appear once there are names to put in them.
+  $("#hosts-parents").hidden = !CONFIG.parents;
+  $("#hosts-godparents").hidden = !CONFIG.godparents;
   $("#host-parents").textContent = CONFIG.parents;
   $("#host-godparents").textContent = CONFIG.godparents;
 
   const orderSub = document.querySelector("#itinerary .sub");
-  orderSub.textContent = weekdayOf(MASS) + " " + formatDate(MASS);
+  orderSub.textContent = weekdayOf(MAIN) + " " + formatDate(MAIN);
 
-  const courtSub = document.querySelector("#court .sub");
-  const total = CONFIG.court.damas.length + CONFIG.court.chambelanes.length;
-  courtSub.textContent = lang === "es"
-    ? total + " amigos, y yo la quinceava"
-    : total + " friends, and me as the fifteenth";
-
-  $("#mass-name").textContent = CONFIG.mass.name;
-  $("#mass-addr").textContent = CONFIG.mass.address + " · " + formatTime(MASS);
+  $("#mass-block").hidden = !CONFIG.mass;
+  if (CONFIG.mass) {
+    $("#mass-name").textContent = CONFIG.mass.name;
+    $("#mass-addr").textContent = [CONFIG.mass.address, MASS && formatTime(MASS)].filter(Boolean).join(" · ");
+    renderMaps("#mass-maps", CONFIG.mass);
+  }
   $("#party-name").textContent = CONFIG.party.name;
-  $("#party-addr").textContent = CONFIG.party.address + " · " + formatTime(PARTY);
+  $("#party-addr").textContent = [CONFIG.party.address, formatTime(PARTY)].filter(Boolean).join(" · ");
   $("#dress-code").textContent = CONFIG.dress[lang];
   $("#hashtag").textContent = CONFIG.hashtag;
 
@@ -1192,7 +1406,6 @@ function applyLanguage() {
     ? "Te agradecemos confirmar antes del " + formatDate(DEADLINE)
     : "Kindly reply by " + formatDate(DEADLINE);
 
-  renderMaps("#mass-maps", CONFIG.mass);
   renderMaps("#party-maps", CONFIG.party);
   renderItinerary();
   renderCourt();
@@ -1219,7 +1432,7 @@ $$(".langswitch button").forEach((b) => {
    6. Countdown
    ============================================================ */
 (function countdown() {
-  const target = MASS.getTime();
+  const target = MAIN.getTime();
   const pad = (n) => String(n).padStart(2, "0");
   function tick() {
     const diff = target - Date.now();
@@ -1260,7 +1473,9 @@ function updateModeNote() {
 function showThanks(attending) {
   form.hidden = true;
   $("#rsvp-thanks").hidden = false;
-  $("#thanks-line").textContent = attending === "si" ? t("rsvp.thanksYes") : t("rsvp.thanksNo");
+  $("#thanks-line").textContent = attending === "si"
+    ? t("rsvp.thanksYes").replace("{date}", formatDate(MAIN))
+    : t("rsvp.thanksNo");
   $("#f-edit").textContent = t("rsvp.edit");
 }
 
@@ -1411,6 +1626,39 @@ function updateTally(guests) {
       }
     } catch (e) { /* first visit on this device, or the reply was removed */ }
   }
+})();
+
+/* ============================================================
+   8. The envelope gate
+   ============================================================ */
+(function gate() {
+  const gate = $("#gate");
+  const page = document.querySelector(".page");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let opened = false;
+
+  document.body.classList.add("gated");
+  page.setAttribute("aria-hidden", "true");
+
+  function open() {
+    if (opened) return;
+    opened = true;
+    gate.classList.add("opening");
+
+    // Long enough for the seal to break, the flap to lift and the letter to rise.
+    const sequence = reduced ? 160 : 2250;
+    setTimeout(() => {
+      gate.classList.add("gone");
+      document.body.classList.remove("gated");
+      page.removeAttribute("aria-hidden");
+      window.scrollTo(0, 0);
+    }, sequence);
+    setTimeout(() => gate.remove(), sequence + 900);
+  }
+
+  $("#gate-open").addEventListener("click", open);
+  $("#env").addEventListener("click", open);
+  window.setTimeout(() => $("#gate-open").focus({ preventScroll: true }), 500);
 })();
 
 applyLanguage();

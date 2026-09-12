@@ -1,6 +1,11 @@
-# Los XV de Isabella
+# Los XV de Ashley
 
-An interactive quinceañera invitation: a single page with a countdown, the
+An interactive quinceañera invitation for **Ashley Camila Valdez**, Friday
+30 October 2026 at LUXOR Wedding & Event.
+
+Guests land on a sealed envelope and click the wax seal to open it — the seal
+breaks, the flap lifts, and the letter rises out before the invitation itself
+takes over. Behind that gate is a single page with a countdown, the
 itinerary, the court of honor, venue and dress-code details, a gift registry,
 and RSVP with a live wishes wall. Fully bilingual (Spanish / English) with a
 language toggle that remembers the guest's choice.
@@ -28,15 +33,22 @@ After editing `src/page.html`, run:
 Everything about the event lives in one `CONFIG` object near the top of the
 `<script>` block in `src/page.html`. Nothing else needs editing:
 
-- `firstName`, `lastName`, `initials` — the initials appear in the wax seal
+- `firstName`, `lastName`, `initials` — the initials appear on the envelope's
+  wax seal and in the monogram at the top of the invitation
 - `massTime`, `partyTime`, `rsvpBy` — local time, `YYYY-MM-DDTHH:MM:SS`
 - `parents`, `godparents`
-- `mass`, `party` — name and address; map links are generated from these
+- `mass`, `party` — name and address; map links are generated from these.
+  `mass: null` (with `massTime: null`) hides the church section everywhere —
+  that is the current setting, since only the one venue is confirmed. Give both
+  a value to switch the Mass back on.
+- `parents`, `godparents` — leave either empty and its line is omitted
 - `dress` — separate `es` / `en` strings
 - `registry` — an array of `{ label, url }`; leave it empty to show only the
   lluvia de sobres
 - `court.damas`, `court.chambelanes` — plain strings, or
-  `{ name: "...", honor: true }` to mark the dama/chambelán de honor
+  `{ name: "...", honor: true }` to mark the dama/chambelán de honor. While both
+  lists are empty the section shows a "to be announced" note instead, which is
+  the current state
 - `itinerary` — each entry has `time`, `es`, `en`, and optional `noteEs`/`noteEn`
 - `whatsapp`, `email` — used by the fallback RSVP mode below
 - `hashtag`
@@ -46,6 +58,20 @@ Two things outside `CONFIG` are worth updating too:
 - the `<title>` on line 1 (it names the page in the browser tab and gallery)
 - the invitation verse and other prose, in the `T` translation table — the
   Spanish and English copy sit side by side there
+
+## Still to fill in
+
+The page renders cleanly with these blank, but they are the open items:
+
+- **Times.** The reception is set to 6:00 pm and the rest of the itinerary
+  follows from it. Every time in `CONFIG.itinerary` is a placeholder.
+- **Venue address.** `party.address` is empty, so the map links search on the
+  venue name alone. Adding the street address makes them exact.
+- **The court.** `court.damas` and `court.chambelanes`.
+- **Hosts.** `parents` and `godparents`.
+- **Registry.** `registry` is empty, so only the lluvia de sobres shows.
+- **RSVP contact.** `whatsapp` and `email` are still the sample values, and the
+  WhatsApp fallback needs a real number.
 
 ## How RSVP works
 
@@ -87,5 +113,9 @@ collection. Each document holds `name`, `attending` (`"si"` / `"no"`), `guests`,
   Georgia and Palatino stacks and still reads correctly.
 - Map embeds are not used — an embedded map iframe is blocked in the artifact
   sandbox — so the venue sections link out to Google Maps, Apple Maps and Waze.
-- The gold-dust background and the rotating seal respect
-  `prefers-reduced-motion`.
+- The gold-dust background, the rotating monogram and the envelope-opening
+  sequence all respect `prefers-reduced-motion` — with it on, the envelope
+  opens instantly rather than animating.
+- The envelope's layers are stacked with `translateZ` rather than `z-index`:
+  inside a `transform-style: preserve-3d` context the browser sorts by real
+  depth, and `z-index` alone lets the letter and the envelope front intersect.
