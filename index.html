@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#080B18">
+<meta name="description" content="Invitación interactiva de XV años — itinerario, corte de honor, ubicación y confirmación de asistencia.">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Invitación interactiva de XV años — itinerario, corte de honor, ubicación y confirmación de asistencia.">
+<title>Los XV de Isabella</title>
+<meta property="og:title" content="Los XV de Isabella">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Pinyon+Script&display=swap">
+
+<style>
+/* ============================================================
+   Los XV de Isabella — midnight & gold
+   Single visual world (a foil-stamped evening invitation), so the
+   palette is committed rather than theme-swapped. Every colour is
+   painted explicitly so the page holds on any host ground.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+:root {
+  --midnight:   #080B18;
+  --midnight-2: #0D1225;
+  --surface:    #141C36;
+  --plum:       #2A1B3D;
+  --gold:       #C9A227;
+  --gold-2:     #D9BC63;
+  --foil:       #F4E6BE;
+  --cream:      #EFE8DA;
+  --muted:      #939AB8;
+  --line:       rgba(201, 162, 39, 0.26);
+  --line-soft:  rgba(147, 154, 184, 0.20);
+
+  --display: "Pinyon Script", "Snell Roundhand", cursive;
+  --engrave: "Cinzel", "Optima", "Palatino Linotype", serif;
+  --body:    "Cormorant Garamond", Georgia, "Times New Roman", serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--midnight);
+  color: var(--cream);
+  font-family: var(--body);
+  font-size: 1.06rem;
+  line-height: 1.75;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+/* Ambient gold dust, painted behind everything */
+#dust {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* A soft plum bloom so the midnight ground isn't flat */
+.ground {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 50% -8%, rgba(42, 27, 61, 0.85), transparent 70%),
+    radial-gradient(45rem 35rem at 110% 60%, rgba(42, 27, 61, 0.45), transparent 70%),
+    radial-gradient(40rem 30rem at -10% 90%, rgba(20, 28, 54, 0.7), transparent 70%);
+}
+
+.page { position: relative; z-index: 1; }
+
+/* ---------- shared layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 22px;
+}
+.wrap.wide { max-width: 1000px; }
+
+section { padding-block: clamp(52px, 8vw, 88px); }
+section.hero { padding-block: clamp(64px, 10vw, 104px) clamp(40px, 6vw, 64px); }
+
+/* ---------- type ---------- */
+.eyebrow {
+  font-family: var(--engrave);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin: 0 0 1.1rem;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+h2 {
+  font-family: var(--engrave);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 4.2vw, 2rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--foil);
+  margin-bottom: 0.4rem;
+}
+.sub {
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 1.02rem;
+  color: var(--muted);
+  margin: 0 0 2.4rem;
+}
+p { margin: 0 0 1.1rem; }
+p:last-child:not(.sub) { margin-bottom: 0; }   /* .sub keeps its breathing room */
+.center { text-align: center; }
+a { color: var(--gold-2); }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--gold-2);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- language toggle ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px 22px 0;
+  pointer-events: none;
+}
+.langswitch {
+  pointer-events: auto;
+  display: inline-flex;
+  border: 1px solid var(--line);
+  background: rgba(8, 11, 24, 0.72);
+  backdrop-filter: blur(6px);
+}
+.langswitch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--engrave);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.langswitch button[aria-pressed="true"] {
+  color: var(--midnight);
+  background: linear-gradient(160deg, var(--foil), var(--gold));
+}
+
+/* ---------- hero ---------- */
+.seal { display: block; margin: 0 auto 1.8rem; width: 92px; height: 92px; }
+.seal-ring { animation: turn 62s linear infinite; transform-origin: 50% 50%; }
+@keyframes turn { to { transform: rotate(360deg); } }
+
+.name {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(3.6rem, 15vw, 6.8rem);
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+  color: var(--foil);
+  background: linear-gradient(168deg, #FFF6DE 12%, var(--gold) 46%, #8C6E1C 62%, var(--foil) 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-block: 0.14em;
+  margin: 0;
+}
+.surname {
+  font-family: var(--engrave);
+  font-size: clamp(0.72rem, 2.6vw, 0.9rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.9rem;
+}
+.datestamp {
+  font-family: var(--engrave);
+  font-size: clamp(0.78rem, 3vw, 1rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-top: 1.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem 0.9rem;
+}
+.datestamp .dot { color: var(--gold); font-size: 0.6em; }
+
+/* ---------- countdown ---------- */
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 2.6rem;
+  max-width: 460px;
+  margin-inline: auto;
+}
+.cd-cell {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(20, 28, 54, 0.6), rgba(8, 11, 24, 0.35));
+  padding: 14px 4px 11px;
+}
+.cd-num {
+  font-family: var(--engrave);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 6.2vw, 2.3rem);
+  line-height: 1;
+  color: var(--foil);
+  font-variant-numeric: tabular-nums;
+}
+.cd-label {
+  font-family: var(--engrave);
+  font-size: 0.54rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.cd-done {
+  font-family: var(--display);
+  font-size: 2rem;
+  color: var(--gold-2);
+  margin-top: 2.4rem;
+}
+
+/* ---------- fleuron divider ---------- */
+.fleuron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 22px;
+}
+.fleuron .rule {
+  height: 1px;
+  flex: 1 1 0;
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
+}
+.fleuron svg { flex: none; }
+
+/* ---------- invitation copy ---------- */
+.verse {
+  font-size: clamp(1.12rem, 3.2vw, 1.3rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--cream);
+}
+.hosts {
+  margin-top: 2.4rem;
+  display: grid;
+  gap: 1.6rem;
+}
+.host-role {
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin-bottom: 0.35rem;
+}
+.host-name { font-size: 1.1rem; color: var(--cream); }
+
+/* ---------- itinerary ---------- */
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--line) 12%, var(--line) 88%, transparent);
+}
+.timeline li {
+  position: relative;
+  padding-left: 30px;
+  padding-bottom: 1.9rem;
+}
+.timeline li:last-child { padding-bottom: 0; }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 0.62rem;
+  width: 9px;
+  height: 9px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.tl-time {
+  font-family: var(--engrave);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  color: var(--gold-2);
+  font-variant-numeric: tabular-nums;
+}
+.tl-title { font-size: 1.14rem; color: var(--cream); margin-top: 0.1rem; }
+.tl-note { font-size: 0.98rem; color: var(--muted); font-style: italic; }
+
+/* ---------- court ---------- */
+.court-group + .court-group { margin-top: 2.8rem; }
+.court-label {
+  font-family: var(--engrave);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+.court-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.6rem 1.2rem;
+  text-align: center;
+}
+.court-grid > * { flex: 0 1 168px; }
+.court-name { font-size: 1.06rem; color: var(--cream); line-height: 1.4; }
+.court-honor {
+  display: block;
+  font-family: var(--engrave);
+  font-size: 0.54rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.4rem;
+}
+
+/* ---------- details ---------- */
+.detail + .detail { margin-top: 2.6rem; padding-top: 2.6rem; border-top: 1px solid var(--line-soft); }
+.detail-kicker {
+  font-family: var(--engrave);
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin-bottom: 0.6rem;
+}
+.venue-name { font-family: var(--engrave); font-size: 1.15rem; letter-spacing: 0.05em; color: var(--foil); }
+.venue-addr { color: var(--muted); margin-top: 0.2rem; }
+
+.maplinks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
+.maplink {
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cream);
+  border: 1px solid var(--line);
+  padding: 9px 14px;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.maplink:hover { background: var(--gold); color: var(--midnight); border-color: var(--gold); }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.1rem; }
+.swatch { text-align: center; width: 74px; }
+.swatch i {
+  display: block;
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 0.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  position: relative;
+}
+.swatch.no i::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent 46%, rgba(239, 232, 218, 0.85) 46%, rgba(239, 232, 218, 0.85) 54%, transparent 54%);
+}
+.swatch span {
+  font-family: var(--engrave);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.registry-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
+
+/* ---------- RSVP ---------- */
+.rsvp-card {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(20, 28, 54, 0.55), rgba(8, 11, 24, 0.3));
+  padding: clamp(22px, 5vw, 38px);
+}
+.field { display: grid; gap: 0.4rem; margin-bottom: 1.2rem; }
+.field label, .legend {
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+}
+input[type="text"], input[type="number"], textarea, select {
+  width: 100%;
+  font-family: var(--body);
+  font-size: 1.02rem;
+  color: var(--cream);
+  background: rgba(8, 11, 24, 0.6);
+  border: 1px solid var(--line-soft);
+  padding: 11px 13px;
+  transition: border-color 0.25s ease;
+}
+input::placeholder, textarea::placeholder { color: rgba(147, 154, 184, 0.6); font-style: italic; }
+input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+textarea { resize: vertical; min-height: 92px; }
+
+fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55rem; }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line-soft);
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.choice:hover { border-color: var(--line); }
+.choice input { accent-color: var(--gold); margin: 0; }
+.choice:has(input:checked) { border-color: var(--gold); background: rgba(201, 162, 39, 0.09); }
+
+.hint { font-size: 0.94rem; color: var(--muted); font-style: italic; margin: -0.5rem 0 1.2rem; }
+
+.btn {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--engrave);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--midnight);
+  background: linear-gradient(160deg, var(--foil) 0%, var(--gold-2) 45%, var(--gold) 100%);
+  padding: 15px 20px;
+  transition: filter 0.25s ease;
+}
+.btn:hover { filter: brightness(1.09); }
+.btn[disabled] { opacity: 0.55; cursor: progress; }
+
+.btn-quiet {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--engrave);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.formnote { font-size: 0.95rem; color: var(--muted); margin-top: 1rem; text-align: center; }
+.status { margin-top: 1rem; font-size: 1rem; text-align: center; }
+.status.err { color: #E8A0A0; }
+
+.thanks { text-align: center; }
+.thanks .mark { font-family: var(--display); font-size: 3rem; color: var(--gold-2); line-height: 1.1; }
+
+.tally {
+  font-family: var(--engrave);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 1.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- wishes ---------- */
+.wishes { display: grid; gap: 1rem; }
+.wish {
+  border-left: 2px solid var(--gold);
+  background: rgba(20, 28, 54, 0.4);
+  padding: 16px 18px;
+}
+.wish-msg { font-style: italic; color: var(--cream); }
+.wish-by {
+  font-family: var(--engrave);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin-top: 0.6rem;
+}
+.wishes-empty { color: var(--muted); font-style: italic; text-align: center; }
+
+/* ---------- footer ---------- */
+footer {
+  text-align: center;
+  padding: clamp(48px, 7vw, 76px) 22px clamp(36px, 5vw, 56px);
+  border-top: 1px solid var(--line-soft);
+}
+.hashtag {
+  font-family: var(--engrave);
+  font-size: clamp(0.74rem, 3vw, 0.92rem);
+  letter-spacing: 0.26em;
+  color: var(--foil);
+}
+.footnote { font-size: 0.92rem; color: var(--muted); margin-top: 0.8rem; font-style: italic; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+</style>
+
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="ground" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="topbar">
+    <div class="langswitch" role="group" aria-label="Idioma / Language">
+      <button type="button" id="lang-es" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="wrap center">
+      <svg class="seal" viewBox="0 0 100 100" role="img" aria-labelledby="seal-title">
+        <title id="seal-title">Monograma</title>
+        <g class="seal-ring">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A227" stroke-width="0.7" stroke-dasharray="1 5" stroke-linecap="round"/>
+        </g>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#C9A227" stroke-width="0.9" opacity="0.75"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#D9BC63" stroke-width="0.4" opacity="0.5"/>
+        <text id="seal-initials" x="50" y="58" text-anchor="middle" font-family="Cinzel, serif" font-size="23" font-weight="600" fill="#F4E6BE" letter-spacing="1">IS</text>
+        <path d="M50 12 l2.2 3.6 L54.4 12 M50 88 l2.2 -3.6 L54.4 88" fill="none" stroke="#C9A227" stroke-width="0.8"/>
+      </svg>
+
+      <p class="eyebrow" data-i18n="hero.kicker">Mis Quince Años</p>
+      <h1 class="name" id="hero-name">Isabella</h1>
+      <p class="surname" id="hero-surname">Ramírez Delgado</p>
+
+      <div class="datestamp">
+        <span id="hero-weekday">Sábado</span>
+        <span class="dot" aria-hidden="true">◆</span>
+        <span id="hero-date">17 de abril de 2027</span>
+        <span class="dot" aria-hidden="true">◆</span>
+        <span id="hero-time">5:00 pm</span>
+      </div>
+
+      <div class="countdown" id="countdown" role="timer" aria-live="off">
+        <div class="cd-cell"><div class="cd-num" id="cd-d">--</div><div class="cd-label" data-i18n="cd.days">Días</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-h">--</div><div class="cd-label" data-i18n="cd.hours">Horas</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-m">--</div><div class="cd-label" data-i18n="cd.minutes">Min</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-s">--</div><div class="cd-label" data-i18n="cd.seconds">Seg</div></div>
+      </div>
+      <p class="cd-done" id="cd-done" hidden data-i18n="cd.today">¡Hoy es el día!</p>
+    </div>
+  </section>
+
+  <div class="fleuron" aria-hidden="true">
+    <span class="rule"></span>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <span class="rule"></span>
+  </div>
+
+  <!-- ===== INVITATION ===== -->
+  <section>
+    <div class="wrap center">
+      <p class="verse" data-i18n="invite.verse">Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.</p>
+      <div class="hosts">
+        <div>
+          <div class="host-role" data-i18n="invite.parents">Mis padres</div>
+          <div class="host-name" id="host-parents">Carlos Ramírez Ibarra y Adriana Delgado Ontiveros</div>
+        </div>
+        <div>
+          <div class="host-role" data-i18n="invite.godparents">Mis padrinos</div>
+          <div class="host-name" id="host-godparents">Miguel Ángel Delgado y Rosa María Ontiveros</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="fleuron" aria-hidden="true">
+    <span class="rule"></span>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <span class="rule"></span>
+  </div>
+
+  <!-- ===== ITINERARY ===== -->
+  <section id="itinerary">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow" data-i18n="order.kicker">El orden del día</p>
+        <h2 data-i18n="order.title">Itinerario</h2>
+        <p class="sub">Sábado 17 de abril · de la misa al último baile</p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <!-- ===== COURT ===== -->
+  <section id="court">
+    <div class="wrap wide">
+      <div class="center">
+        <p class="eyebrow" data-i18n="court.kicker">Quienes bailan conmigo</p>
+        <h2 data-i18n="court.title">Corte de Honor</h2>
+        <p class="sub">Catorce amigos, y yo la quinceava</p>
+      </div>
+      <div id="court-groups"></div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILS ===== -->
+  <section id="details">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow" data-i18n="details.kicker">Lo que necesitas saber</p>
+        <h2 data-i18n="details.title">Detalles</h2>
+        <p class="sub" data-i18n="details.sub">Dónde, cómo vestir y la mesa de regalos</p>
+      </div>
+
+      <div class="detail">
+        <div class="detail-kicker" data-i18n="details.mass">La misa</div>
+        <div class="venue-name" id="mass-name">Parroquia de San Judas Tadeo</div>
+        <div class="venue-addr" id="mass-addr">Av. Hidalgo 412, Centro · 5:00 pm</div>
+        <div class="maplinks" id="mass-maps"></div>
+      </div>
+
+      <div class="detail">
+        <div class="detail-kicker" data-i18n="details.reception">La recepción</div>
+        <div class="venue-name" id="party-name">Salón Jardín Casa Aurora</div>
+        <div class="venue-addr" id="party-addr">Camino a Los Olivos 78, Lomas del Valle · 6:30 pm</div>
+        <div class="maplinks" id="party-maps"></div>
+      </div>
+
+      <div class="detail">
+        <div class="detail-kicker" data-i18n="details.dress">Código de vestimenta</div>
+        <p id="dress-code">Etiqueta rigurosa. Ellas, vestido largo; ellos, esmoquin o traje oscuro.</p>
+        <div class="swatches" id="swatches">
+          <div class="swatch no"><i style="background:#EFE8DA"></i><span data-i18n="dress.white">Blanco</span></div>
+          <div class="swatch no"><i style="background:linear-gradient(140deg,#F4E6BE,#C9A227)"></i><span data-i18n="dress.gold">Dorado</span></div>
+          <div class="swatch no"><i style="background:#E3D5C0"></i><span data-i18n="dress.champagne">Champán</span></div>
+        </div>
+        <p class="hint" style="margin-top:1rem" data-i18n="dress.reserved">Estos tonos están reservados para la quinceañera y su corte.</p>
+      </div>
+
+      <div class="detail">
+        <div class="detail-kicker" data-i18n="details.gifts">Mesa de regalos</div>
+        <p data-i18n="gifts.body">Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción, o puedes consultar la mesa de regalos.</p>
+        <div class="registry-list" id="registry"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="fleuron" aria-hidden="true">
+    <span class="rule"></span>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#C9A227"/><circle cx="4" cy="5" r="1.6" fill="#D9BC63"/><circle cx="30" cy="5" r="1.6" fill="#D9BC63"/></svg>
+    <span class="rule"></span>
+  </div>
+
+  <!-- ===== RSVP ===== -->
+  <section id="rsvp">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow" data-i18n="rsvp.kicker">No faltes</p>
+        <h2 data-i18n="rsvp.title">Confirma tu asistencia</h2>
+        <p class="sub" id="rsvp-deadline">Te agradecemos confirmar antes del 20 de marzo de 2027</p>
+      </div>
+
+      <div class="rsvp-card">
+        <form id="rsvp-form" novalidate>
+          <div class="field">
+            <label for="f-name" data-i18n="rsvp.name">Nombre completo</label>
+            <input type="text" id="f-name" name="name" autocomplete="name" required data-i18n-ph="rsvp.namePh" placeholder="Como aparece en tu invitación">
+          </div>
+
+          <fieldset>
+            <legend class="legend" data-i18n="rsvp.attending">¿Nos acompañas?</legend>
+            <div class="choices">
+              <label class="choice" for="f-yes"><input type="radio" id="f-yes" name="attending" value="si" checked><span data-i18n="rsvp.yes">Ahí estaré</span></label>
+              <label class="choice" for="f-no"><input type="radio" id="f-no" name="attending" value="no"><span data-i18n="rsvp.no">No podré ir</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field" id="guests-field">
+            <label for="f-guests" data-i18n="rsvp.guests">Número de personas (incluyéndote)</label>
+            <input type="number" id="f-guests" name="guests" min="1" max="12" step="1" value="1" inputmode="numeric">
+          </div>
+
+          <div class="field">
+            <label for="f-song" data-i18n="rsvp.song">Canción que te haría bailar</label>
+            <input type="text" id="f-song" name="song" data-i18n-ph="rsvp.songPh" placeholder="Opcional — para el DJ">
+          </div>
+
+          <div class="field">
+            <label for="f-message" data-i18n="rsvp.message">Un mensaje para Isabella</label>
+            <textarea id="f-message" name="message" maxlength="400" data-i18n-ph="rsvp.messagePh" placeholder="Opcional"></textarea>
+          </div>
+          <p class="hint" data-i18n="rsvp.publicNote">Los mensajes se muestran en el muro de buenos deseos, más abajo.</p>
+
+          <button type="submit" class="btn" id="f-submit" data-i18n="rsvp.submit">Enviar confirmación</button>
+          <p class="status" id="rsvp-status" role="status" aria-live="polite"></p>
+          <p class="formnote" id="rsvp-mode"></p>
+        </form>
+
+        <div id="rsvp-thanks" class="thanks" hidden>
+          <div class="mark" aria-hidden="true">Gracias</div>
+          <p id="thanks-line">Tu confirmación quedó registrada.</p>
+          <button type="button" class="btn-quiet" id="f-edit" data-i18n="rsvp.edit">Editar mi respuesta</button>
+        </div>
+      </div>
+
+      <p class="tally" id="tally" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===== WISHES ===== -->
+  <section id="wishes-section">
+    <div class="wrap">
+      <div class="center">
+        <p class="eyebrow" data-i18n="wishes.kicker">De parte de todos</p>
+        <h2 data-i18n="wishes.title">Muro de buenos deseos</h2>
+        <p class="sub" data-i18n="wishes.sub">Mensajes de quienes ya confirmaron</p>
+      </div>
+      <div class="wishes" id="wishes"></div>
+      <p class="wishes-empty" id="wishes-empty" data-i18n="wishes.empty">Aún no hay mensajes. Deja el primero al confirmar tu asistencia.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="hashtag" id="hashtag">#LosXVdeIsabella</div>
+    <p class="footnote" data-i18n="footer.note">Comparte tus fotos de la noche con este hashtag.</p>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   1. CONFIG — edit everything about the event here.
+   Every other line of this file reads from this object.
+   ============================================================ */
+const CONFIG = {
+  // --- The quinceañera ---
+  firstName: "Isabella",
+  lastName: "Ramírez Delgado",
+  initials: "IS",
+
+  // --- When. Local time, 24h. ---
+  massTime:  "2027-04-17T17:00:00",
+  partyTime: "2027-04-17T18:30:00",
+  rsvpBy:    "2027-03-20T23:59:00",
+
+  // --- Who is hosting ---
+  parents:    "Carlos Ramírez Ibarra y Adriana Delgado Ontiveros",
+  godparents: "Miguel Ángel Delgado y Rosa María Ontiveros",
+
+  // --- Where ---
+  mass: {
+    name: "Parroquia de San Judas Tadeo",
+    address: "Av. Hidalgo 412, Centro, Guadalajara, Jal."
+  },
+  party: {
+    name: "Salón Jardín Casa Aurora",
+    address: "Camino a Los Olivos 78, Lomas del Valle, Zapopan, Jal."
+  },
+
+  // --- Dress code ---
+  dress: {
+    es: "Etiqueta rigurosa. Ellas, vestido largo; ellos, esmoquin o traje oscuro.",
+    en: "Black tie. Floor-length gowns; tuxedos or dark suits."
+  },
+
+  // --- Gift registry. Leave the array empty to show only the envelope shower. ---
+  registry: [
+    { label: "Liverpool", url: "https://mesaderegalos.liverpool.com.mx" },
+    { label: "Amazon",    url: "https://www.amazon.com.mx/wedding/registry" }
+  ],
+
+  hashtag: "#LosXVdeIsabella",
+
+  // --- Fallback RSVP, used when the page runs outside claude.ai
+  //     (e.g. GitHub Pages) and cannot save responses itself. ---
+  whatsapp: "+521234567890",   // international format, digits after the +
+  email: "xv.isabella@example.com",
+
+  // --- The court. Mark one person `honor: true` for chambelán/dama de honor. ---
+  court: {
+    damas: [
+      "Valentina Cruz Mora", "Camila Orozco Lira", "Renata Villalobos Sáenz",
+      "Ximena Aguilar Ponce", "Daniela Peña Lugo", "Mariana Solís Tovar",
+      "Andrea Fuentes Gil"
+    ],
+    chambelanes: [
+      { name: "Emiliano Ruiz Alcántara", honor: true },
+      "Diego Ferrer Naranjo", "Sebastián Nava Cortés", "Andrés Quintero Ríos",
+      "Leonardo Vega Maldonado", "Mateo Barrios Zepeda", "Rodrigo Iñiguez Paz"
+    ]
+  },
+
+  // --- The run of the evening ---
+  itinerary: [
+    { time: "17:00", es: "Misa de acción de gracias", en: "Thanksgiving Mass",
+      noteEs: "Parroquia de San Judas Tadeo", noteEn: "San Judas Tadeo Parish" },
+    { time: "18:30", es: "Recepción y cóctel", en: "Reception & cocktails",
+      noteEs: "Casa Aurora abre sus puertas", noteEn: "Doors open at Casa Aurora" },
+    { time: "19:15", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
+      noteEs: "", noteEn: "" },
+    { time: "19:30", es: "Vals y baile sorpresa", en: "Waltz & surprise dance",
+      noteEs: "Con mi padre y los chambelanes", noteEn: "With my father and the chambelanes" },
+    { time: "20:00", es: "Cena", en: "Dinner", noteEs: "", noteEn: "" },
+    { time: "21:00", es: "Última muñeca y cambio de zapatillas", en: "Last doll & changing of the shoes",
+      noteEs: "El momento que lo cambia todo", noteEn: "The moment everything changes" },
+    { time: "21:30", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
+    { time: "22:00", es: "Baile", en: "Dancing", noteEs: "Hasta que apaguen las luces", noteEn: "Until they turn the lights off" },
+    { time: "01:00", es: "Despedida", en: "Farewell", noteEs: "", noteEn: "" }
+  ]
+};
+
+/* ============================================================
+   2. Bilingual copy
+   ============================================================ */
+const T = {
+  es: {
+    "hero.kicker": "Mis Quince Años",
+    "cd.days": "Días", "cd.hours": "Horas", "cd.minutes": "Min", "cd.seconds": "Seg",
+    "cd.today": "¡Hoy es el día!",
+    "invite.verse": "Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.",
+    "invite.parents": "Mis padres",
+    "invite.godparents": "Mis padrinos",
+    "order.kicker": "El orden del día",
+    "order.title": "Itinerario",
+    "court.kicker": "Quienes bailan conmigo",
+    "court.title": "Corte de Honor",
+    "court.damas": "Damas",
+    "court.chambelanes": "Chambelanes",
+    "court.honorMan": "Chambelán de honor",
+    "court.honorWoman": "Dama de honor",
+    "details.kicker": "Lo que necesitas saber",
+    "details.title": "Detalles",
+    "details.sub": "Dónde, cómo vestir y la mesa de regalos",
+    "details.mass": "La misa",
+    "details.reception": "La recepción",
+    "details.dress": "Código de vestimenta",
+    "details.gifts": "Mesa de regalos",
+    "dress.white": "Blanco", "dress.gold": "Dorado", "dress.champagne": "Champán",
+    "dress.reserved": "Estos tonos están reservados para la quinceañera y su corte.",
+    "gifts.body": "Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción, o puedes consultar la mesa de regalos.",
+    "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
+    "rsvp.kicker": "No faltes",
+    "rsvp.title": "Confirma tu asistencia",
+    "rsvp.name": "Nombre completo",
+    "rsvp.namePh": "Como aparece en tu invitación",
+    "rsvp.attending": "¿Nos acompañas?",
+    "rsvp.yes": "Ahí estaré", "rsvp.no": "No podré ir",
+    "rsvp.guests": "Número de personas (incluyéndote)",
+    "rsvp.song": "Canción que te haría bailar",
+    "rsvp.songPh": "Opcional — para el DJ",
+    "rsvp.message": "Un mensaje para {name}",
+    "rsvp.messagePh": "Opcional",
+    "rsvp.publicNote": "Los mensajes se muestran en el muro de buenos deseos, más abajo.",
+    "rsvp.submit": "Enviar confirmación",
+    "rsvp.sending": "Enviando…",
+    "rsvp.edit": "Editar mi respuesta",
+    "rsvp.needName": "Escribe tu nombre para confirmar.",
+    "rsvp.failed": "No se pudo guardar. Inténtalo otra vez en un momento.",
+    "rsvp.full": "La lista de confirmaciones está llena. Avísanos por WhatsApp.",
+    "rsvp.thanksYes": "Te esperamos el 17 de abril.",
+    "rsvp.thanksNo": "Gracias por avisarnos. Te vamos a extrañar.",
+    "rsvp.whatsappMode": "Al enviar se abrirá WhatsApp con tu confirmación lista.",
+    "rsvp.tally": "{guests} invitados confirmados",
+    "wishes.kicker": "De parte de todos",
+    "wishes.title": "Muro de buenos deseos",
+    "wishes.sub": "Mensajes de quienes ya confirmaron",
+    "wishes.empty": "Aún no hay mensajes. Deja el primero al confirmar tu asistencia.",
+    "footer.note": "Comparte tus fotos de la noche con este hashtag.",
+    "weekdays": ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
+    "months": ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"]
+  },
+  en: {
+    "hero.kicker": "My Quinceañera",
+    "cd.days": "Days", "cd.hours": "Hours", "cd.minutes": "Min", "cd.seconds": "Sec",
+    "cd.today": "Today is the day!",
+    "invite.verse": "Some moments life keeps with particular care. With a heart full of gratitude to God and to life, we invite you to join us in the celebration of my fifteenth year.",
+    "invite.parents": "My parents",
+    "invite.godparents": "My godparents",
+    "order.kicker": "How the day unfolds",
+    "order.title": "Itinerary",
+    "court.kicker": "Those who dance with me",
+    "court.title": "Court of Honor",
+    "court.damas": "Damas",
+    "court.chambelanes": "Chambelanes",
+    "court.honorMan": "Chambelán de honor",
+    "court.honorWoman": "Dama de honor",
+    "details.kicker": "What you need to know",
+    "details.title": "Details",
+    "details.sub": "Where to go, what to wear, and the registry",
+    "details.mass": "The Mass",
+    "details.reception": "The reception",
+    "details.dress": "Dress code",
+    "details.gifts": "Gift registry",
+    "dress.white": "White", "dress.gold": "Gold", "dress.champagne": "Champagne",
+    "dress.reserved": "These shades are reserved for the quinceañera and her court.",
+    "gifts.body": "Your presence is the gift I am most looking forward to. If you would also like to bring something, there will be a lluvia de sobres — an envelope shower — during the reception, or you can use the registry.",
+    "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
+    "rsvp.kicker": "Don't miss it",
+    "rsvp.title": "RSVP",
+    "rsvp.name": "Full name",
+    "rsvp.namePh": "As it appears on your invitation",
+    "rsvp.attending": "Will you join us?",
+    "rsvp.yes": "I'll be there", "rsvp.no": "I can't make it",
+    "rsvp.guests": "How many in your party (including you)",
+    "rsvp.song": "A song that would get you dancing",
+    "rsvp.songPh": "Optional — for the DJ",
+    "rsvp.message": "A message for {name}",
+    "rsvp.messagePh": "Optional",
+    "rsvp.publicNote": "Messages appear on the wishes wall further down the page.",
+    "rsvp.submit": "Send my RSVP",
+    "rsvp.sending": "Sending…",
+    "rsvp.edit": "Edit my reply",
+    "rsvp.needName": "Add your name to send your RSVP.",
+    "rsvp.failed": "That didn't save. Try again in a moment.",
+    "rsvp.full": "The guest list is full. Let us know on WhatsApp instead.",
+    "rsvp.thanksYes": "We'll see you on April 17th.",
+    "rsvp.thanksNo": "Thank you for letting us know. You'll be missed.",
+    "rsvp.whatsappMode": "Sending opens WhatsApp with your RSVP ready to go.",
+    "rsvp.tally": "{guests} guests confirmed",
+    "wishes.kicker": "From everyone",
+    "wishes.title": "Wishes wall",
+    "wishes.sub": "Messages from guests who have replied",
+    "wishes.empty": "No messages yet. Leave the first one when you RSVP.",
+    "footer.note": "Share your photos from the night with this hashtag.",
+    "weekdays": ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+    "months": ["January","February","March","April","May","June","July","August","September","October","November","December"]
+  }
+};
+
+/* ============================================================
+   3. Small helpers
+   ============================================================ */
+const $  = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+function store(key, value) {
+  try {
+    if (value === undefined) return window.localStorage.getItem(key);
+    window.localStorage.setItem(key, value);
+  } catch (e) { /* private window, blocked storage — carry on without it */ }
+  return null;
+}
+
+let lang = (store("quince.lang") === "en") ? "en" : "es";
+const t = (key) => (T[lang][key] !== undefined ? T[lang][key] : key);
+
+function parseLocal(s) {
+  const [d, tm] = s.split("T");
+  const [y, mo, da] = d.split("-").map(Number);
+  const [h, mi] = tm.split(":").map(Number);
+  return new Date(y, mo - 1, da, h, mi, 0, 0);
+}
+
+function formatTime(date) {
+  let h = date.getHours();
+  const m = String(date.getMinutes()).padStart(2, "0");
+  const suffix = h >= 12 ? "pm" : "am";
+  h = h % 12 || 12;
+  return h + ":" + m + " " + suffix;
+}
+
+function formatDate(date) {
+  const day = date.getDate();
+  const month = T[lang].months[date.getMonth()];
+  const year = date.getFullYear();
+  return lang === "es"
+    ? day + " de " + month + " de " + year
+    : month + " " + day + ", " + year;
+}
+
+function weekdayOf(date) {
+  const w = T[lang].weekdays[date.getDay()];
+  return lang === "es" ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+}
+
+function el(tag, className, text) {
+  const n = document.createElement(tag);
+  if (className) n.className = className;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+
+const MASS  = parseLocal(CONFIG.massTime);
+const PARTY = parseLocal(CONFIG.partyTime);
+const DEADLINE = parseLocal(CONFIG.rsvpBy);
+
+/* ============================================================
+   4. Ambient gold dust
+   ============================================================ */
+(function dust() {
+  const canvas = $("#dust");
+  const ctx = canvas.getContext("2d");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let motes = [], w = 0, h = 0, raf = null;
+
+  function seed() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth; h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(Math.min(110, (w * h) / 12000));
+    motes = [];
+    for (let i = 0; i < count; i++) {
+      motes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.5 + 0.35,
+        a: Math.random() * 0.5 + 0.12,
+        vy: -(Math.random() * 0.14 + 0.03),
+        vx: (Math.random() - 0.5) * 0.08,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.014 + 0.004
+      });
+    }
+  }
+
+  function paint(animate) {
+    ctx.clearRect(0, 0, w, h);
+    for (const m of motes) {
+      if (animate) {
+        m.y += m.vy;
+        m.x += m.vx + Math.sin(m.phase) * 0.18;
+        m.phase += m.speed;
+        if (m.y < -6) { m.y = h + 6; m.x = Math.random() * w; }
+        if (m.x < -6) m.x = w + 6;
+        if (m.x > w + 6) m.x = -6;
+      }
+      const twinkle = animate ? (0.72 + Math.sin(m.phase * 1.7) * 0.28) : 1;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(217, 188, 99, " + (m.a * twinkle).toFixed(3) + ")";
+      ctx.fill();
+    }
+    if (animate) raf = requestAnimationFrame(() => paint(true));
+  }
+
+  function start() { seed(); if (raf) cancelAnimationFrame(raf); paint(!reduced); }
+  start();
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(start, 200);
+  });
+})();
+
+/* ============================================================
+   5. Render everything that comes from CONFIG
+   ============================================================ */
+function mapLinks(place) {
+  const q = encodeURIComponent(place.name + ", " + place.address);
+  return [
+    { key: "map.google", url: "https://www.google.com/maps/search/?api=1&query=" + q },
+    { key: "map.apple",  url: "https://maps.apple.com/?q=" + q },
+    { key: "map.waze",   url: "https://waze.com/ul?q=" + q }
+  ];
+}
+
+function renderMaps(containerId, place) {
+  const box = $(containerId);
+  box.textContent = "";
+  for (const link of mapLinks(place)) {
+    const a = el("a", "maplink", t(link.key));
+    a.href = link.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    box.appendChild(a);
+  }
+}
+
+function renderItinerary() {
+  const list = $("#timeline");
+  list.textContent = "";
+  for (const item of CONFIG.itinerary) {
+    const li = document.createElement("li");
+    const [hh, mm] = item.time.split(":").map(Number);
+    const when = new Date(2000, 0, 1, hh, mm);
+    li.appendChild(el("div", "tl-time", formatTime(when)));
+    li.appendChild(el("div", "tl-title", lang === "es" ? item.es : item.en));
+    const note = lang === "es" ? item.noteEs : item.noteEn;
+    if (note) li.appendChild(el("div", "tl-note", note));
+    list.appendChild(li);
+  }
+}
+
+function renderCourt() {
+  const box = $("#court-groups");
+  box.textContent = "";
+  const groups = [
+    { label: t("court.damas"), people: CONFIG.court.damas, honorKey: "court.honorWoman" },
+    { label: t("court.chambelanes"), people: CONFIG.court.chambelanes, honorKey: "court.honorMan" }
+  ];
+  for (const group of groups) {
+    if (!group.people || !group.people.length) continue;
+    const wrap = el("div", "court-group");
+    wrap.appendChild(el("div", "court-label", group.label));
+    const grid = el("div", "court-grid");
+    for (const person of group.people) {
+      const isObj = typeof person === "object" && person !== null;
+      const name = isObj ? person.name : person;
+      const cell = el("div", "court-name", name);
+      if (isObj && person.honor) cell.appendChild(el("span", "court-honor", t(group.honorKey)));
+      grid.appendChild(cell);
+    }
+    wrap.appendChild(grid);
+    box.appendChild(wrap);
+  }
+}
+
+function renderRegistry() {
+  const box = $("#registry");
+  box.textContent = "";
+  for (const r of CONFIG.registry) {
+    const a = el("a", "maplink", r.label);
+    a.href = r.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    box.appendChild(a);
+  }
+}
+
+function applyLanguage() {
+  document.documentElement.lang = lang;
+
+  $$("[data-i18n]").forEach((node) => {
+    const key = node.getAttribute("data-i18n");
+    let value = t(key);
+    if (typeof value === "string") {
+      node.textContent = value.replace("{name}", CONFIG.firstName);
+    }
+  });
+  $$("[data-i18n-ph]").forEach((node) => {
+    node.placeholder = t(node.getAttribute("data-i18n-ph"));
+  });
+
+  $("#hero-name").textContent = CONFIG.firstName;
+  $("#hero-surname").textContent = CONFIG.lastName;
+  $("#seal-initials").textContent = CONFIG.initials;
+  $("#hero-weekday").textContent = weekdayOf(MASS);
+  $("#hero-date").textContent = formatDate(MASS);
+  $("#hero-time").textContent = formatTime(MASS);
+  $("#host-parents").textContent = CONFIG.parents;
+  $("#host-godparents").textContent = CONFIG.godparents;
+
+  const orderSub = document.querySelector("#itinerary .sub");
+  orderSub.textContent = weekdayOf(MASS) + " " + formatDate(MASS);
+
+  const courtSub = document.querySelector("#court .sub");
+  const total = CONFIG.court.damas.length + CONFIG.court.chambelanes.length;
+  courtSub.textContent = lang === "es"
+    ? total + " amigos, y yo la quinceava"
+    : total + " friends, and me as the fifteenth";
+
+  $("#mass-name").textContent = CONFIG.mass.name;
+  $("#mass-addr").textContent = CONFIG.mass.address + " · " + formatTime(MASS);
+  $("#party-name").textContent = CONFIG.party.name;
+  $("#party-addr").textContent = CONFIG.party.address + " · " + formatTime(PARTY);
+  $("#dress-code").textContent = CONFIG.dress[lang];
+  $("#hashtag").textContent = CONFIG.hashtag;
+
+  $("#rsvp-deadline").textContent = lang === "es"
+    ? "Te agradecemos confirmar antes del " + formatDate(DEADLINE)
+    : "Kindly reply by " + formatDate(DEADLINE);
+
+  renderMaps("#mass-maps", CONFIG.mass);
+  renderMaps("#party-maps", CONFIG.party);
+  renderItinerary();
+  renderCourt();
+  renderRegistry();
+  renderWishes(lastWishes);
+  updateTally(lastTally);
+  updateModeNote();
+  if (savedReply) showThanks(savedReply.attending);
+
+  $$(".langswitch button").forEach((b) => {
+    b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+  });
+}
+
+$$(".langswitch button").forEach((b) => {
+  b.addEventListener("click", () => {
+    lang = b.dataset.lang;
+    store("quince.lang", lang);
+    applyLanguage();
+  });
+});
+
+/* ============================================================
+   6. Countdown
+   ============================================================ */
+(function countdown() {
+  const target = MASS.getTime();
+  const pad = (n) => String(n).padStart(2, "0");
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      $("#countdown").hidden = true;
+      $("#cd-done").hidden = false;
+      return;
+    }
+    const s = Math.floor(diff / 1000);
+    $("#cd-d").textContent = Math.floor(s / 86400);
+    $("#cd-h").textContent = pad(Math.floor(s / 3600) % 24);
+    $("#cd-m").textContent = pad(Math.floor(s / 60) % 60);
+    $("#cd-s").textContent = pad(s % 60);
+    setTimeout(tick, 1000 - (Date.now() % 1000));
+  }
+  tick();
+})();
+
+/* ============================================================
+   7. RSVP
+   Two modes, decided at runtime:
+     · saved   — the page can store replies itself (claude.ai artifact)
+     · whatsapp — anywhere else; the form composes a WhatsApp message
+   ============================================================ */
+let db = null;
+let mode = "whatsapp";
+let lastWishes = [];
+let lastTally = null;
+let savedReply = null;
+
+const form = $("#rsvp-form");
+const statusLine = $("#rsvp-status");
+
+function updateModeNote() {
+  $("#rsvp-mode").textContent = mode === "whatsapp" ? t("rsvp.whatsappMode") : "";
+}
+
+function showThanks(attending) {
+  form.hidden = true;
+  $("#rsvp-thanks").hidden = false;
+  $("#thanks-line").textContent = attending === "si" ? t("rsvp.thanksYes") : t("rsvp.thanksNo");
+  $("#f-edit").textContent = t("rsvp.edit");
+}
+
+$("#f-edit").addEventListener("click", () => {
+  $("#rsvp-thanks").hidden = true;
+  form.hidden = false;
+  statusLine.textContent = "";
+  statusLine.className = "status";
+  $("#f-name").focus();
+});
+
+// Party size only matters if they are coming.
+function syncGuestsField() {
+  $("#guests-field").hidden = form.elements.attending.value === "no";
+}
+$$("input[name='attending']").forEach((r) => r.addEventListener("change", syncGuestsField));
+syncGuestsField();
+
+function readForm() {
+  const data = new FormData(form);
+  const attending = data.get("attending");
+  const message = (data.get("message") || "").toString().trim().slice(0, 400);
+  return {
+    name: (data.get("name") || "").toString().trim().slice(0, 80),
+    attending: attending,
+    guests: attending === "si" ? Math.max(1, Math.min(12, Number(data.get("guests")) || 1)) : 0,
+    song: (data.get("song") || "").toString().trim().slice(0, 120),
+    message: message,
+    hasMessage: message.length > 0,
+    lang: lang,
+    createdAt: new Date().toISOString()
+  };
+}
+
+function whatsappText(reply) {
+  const lines = lang === "es"
+    ? ["Confirmación XV de " + CONFIG.firstName, "Nombre: " + reply.name,
+       reply.attending === "si" ? "Asistiré — personas: " + reply.guests : "No podré asistir"]
+    : [CONFIG.firstName + "'s quinceañera RSVP", "Name: " + reply.name,
+       reply.attending === "si" ? "Attending — party of " + reply.guests : "Cannot attend"];
+  if (reply.song) lines.push((lang === "es" ? "Canción: " : "Song: ") + reply.song);
+  if (reply.message) lines.push((lang === "es" ? "Mensaje: " : "Message: ") + reply.message);
+  return lines.join("\n");
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const reply = readForm();
+
+  if (!reply.name) {
+    statusLine.className = "status err";
+    statusLine.textContent = t("rsvp.needName");
+    $("#f-name").focus();
+    return;
+  }
+
+  const button = $("#f-submit");
+  statusLine.className = "status";
+  statusLine.textContent = "";
+
+  if (mode === "whatsapp") {
+    const digits = CONFIG.whatsapp.replace(/[^0-9]/g, "");
+    const url = digits
+      ? "https://wa.me/" + digits + "?text=" + encodeURIComponent(whatsappText(reply))
+      : "mailto:" + CONFIG.email + "?subject=" + encodeURIComponent("RSVP " + CONFIG.firstName) +
+        "&body=" + encodeURIComponent(whatsappText(reply));
+    window.open(url, "_blank", "noopener");
+    savedReply = reply;
+    showThanks(reply.attending);
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = t("rsvp.sending");
+  try {
+    const existingId = store("quince.replyId");
+    const ref = existingId ? db.collection("rsvps").doc(existingId) : db.collection("rsvps").doc();
+    await ref.set(reply);
+    store("quince.replyId", ref.id);
+    savedReply = reply;
+    showThanks(reply.attending);
+  } catch (error) {
+    statusLine.className = "status err";
+    statusLine.textContent = (error && error.code === "quota_exceeded") ? t("rsvp.full") : t("rsvp.failed");
+  } finally {
+    button.disabled = false;
+    button.textContent = t("rsvp.submit");
+  }
+});
+
+/* ---------- wishes wall + running tally ---------- */
+function renderWishes(list) {
+  lastWishes = list;
+  const box = $("#wishes");
+  box.textContent = "";
+  $("#wishes-empty").hidden = list.length > 0;
+  for (const wish of list) {
+    const card = el("div", "wish");
+    card.appendChild(el("p", "wish-msg", "“" + wish.message + "”"));
+    card.appendChild(el("div", "wish-by", wish.name));
+    box.appendChild(card);
+  }
+}
+
+function updateTally(guests) {
+  lastTally = guests;
+  const line = $("#tally");
+  if (guests === null || guests <= 0) { line.hidden = true; return; }
+  line.hidden = false;
+  line.textContent = t("rsvp.tally").replace("{guests}", guests);
+}
+
+(async function connect() {
+  const capability = await window.claude?.use?.("db");
+  if (!capability) return;           // stays in WhatsApp mode — nothing else to do
+  db = capability;
+  mode = "saved";
+  updateModeNote();
+
+  const onError = () => { /* subscription ended; the form still works */ };
+
+  db.collection("rsvps").where("attending", "==", "si").limit(1000)
+    .onSnapshot((snap) => {
+      let guests = 0;
+      snap.docs.forEach((d) => { guests += Number(d.data().guests) || 0; });
+      updateTally(guests);
+    }, onError);
+
+  db.collection("rsvps").where("hasMessage", "==", true).orderBy("createdAt", "desc").limit(40)
+    .onSnapshot((snap) => {
+      renderWishes(snap.docs.map((d) => d.data()).filter((r) => r && r.message));
+    }, onError);
+
+  const mine = store("quince.replyId");
+  if (mine) {
+    try {
+      const snap = await db.collection("rsvps").doc(mine).get();
+      if (snap.exists) {
+        savedReply = snap.data();
+        const f = form.elements;
+        f.name.value = savedReply.name || "";
+        f.attending.value = savedReply.attending || "si";
+        f.guests.value = savedReply.guests || 1;
+        f.song.value = savedReply.song || "";
+        f.message.value = savedReply.message || "";
+        syncGuestsField();
+        showThanks(savedReply.attending);
+      }
+    } catch (e) { /* first visit on this device, or the reply was removed */ }
+  }
+})();
+
+applyLanguage();
+</script>
+</body>
+</html>
