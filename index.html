@@ -341,6 +341,9 @@ a { color: var(--gold-2); }
   align-items: flex-start;
   gap: 1.6rem 1.2rem;
   text-align: center;
+  /* keeps rows filled rather than stranding one name on the last row */
+  max-width: 620px;
+  margin-inline: auto;
 }
 .court-grid > * { flex: 0 1 168px; }
 .court-name { font-size: 1.06rem; color: var(--cream); line-height: 1.4; }
@@ -899,13 +902,9 @@ body.gated { overflow: hidden; }
 
       <div class="detail">
         <div class="detail-kicker" data-i18n="details.dress">Código de vestimenta</div>
-        <p id="dress-code">Etiqueta rigurosa. Ellas, vestido largo; ellos, esmoquin o traje oscuro.</p>
-        <div class="swatches" id="swatches">
-          <div class="swatch no"><i style="background:#EFE8DA"></i><span data-i18n="dress.white">Blanco</span></div>
-          <div class="swatch no"><i style="background:linear-gradient(140deg,#F4E6BE,#C9A227)"></i><span data-i18n="dress.gold">Dorado</span></div>
-          <div class="swatch no"><i style="background:#E3D5C0"></i><span data-i18n="dress.champagne">Champán</span></div>
-        </div>
-        <p class="hint" style="margin-top:1rem" data-i18n="dress.reserved">Estos tonos están reservados para la quinceañera y su corte.</p>
+        <p id="dress-code">Formal. El único color reservado es el azul marino.</p>
+        <div class="swatches" id="swatches"></div>
+        <p class="hint" id="dress-note" style="margin-top:1rem"></p>
       </div>
 
       <div class="detail">
@@ -1034,7 +1033,7 @@ const CONFIG = {
 
   // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
   parents:    ["Adriana Valdez", "Jose Valdez"],
-  godparents: [],
+  godparents: ["Lucas Herrera", "Marina Sauceda"],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
   mass: null,
@@ -1043,10 +1042,22 @@ const CONFIG = {
     address: "500 Baker St, Bakersfield, CA 93305"
   },
 
-  // --- Dress code ---
+  // --- Dress code. `avoid` renders a crossed-out swatch per colour;
+  //     `court` renders a plain one showing what the court is wearing. ---
   dress: {
-    es: "Etiqueta rigurosa. Ellas, vestido largo; ellos, esmoquin o traje oscuro.",
-    en: "Black tie. Floor-length gowns; tuxedos or dark suits."
+    es: "Formal. El único color reservado es el azul marino.",
+    en: "Formal. The one color we ask you to skip is navy blue.",
+    avoid: [
+      { color: "#1E3A6E", es: "Azul marino", en: "Navy blue" }
+    ],
+    court: {
+      color: "linear-gradient(140deg, #F4DBBC, #D6AC87)",
+      es: "Las damas", en: "The damas"
+    },
+    note: {
+      es: "Cualquier otro color es bienvenido. Las damas vestirán en tonos durazno y beige.",
+      en: "Every other color is welcome. The damas will be in apricot and beige."
+    }
   },
 
   // --- Gift registry. Leave the array empty to show only the envelope shower. ---
@@ -1065,7 +1076,10 @@ const CONFIG = {
   //     mark the dama/chambelán de honor. While both lists are empty the
   //     page shows a "to be announced" note instead. ---
   court: {
-    damas: [],
+    damas: [
+      "Aileen Sanchez", "Camila Cabrera", "Jacqueline Gonzalez",
+      "Maria Montaño", "Kimberly Sierra"
+    ],
     chambelanes: []
   },
 
@@ -1076,7 +1090,7 @@ const CONFIG = {
     { time: "18:45", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
       noteEs: "", noteEn: "" },
     { time: "19:00", es: "Vals y baile sorpresa", en: "Waltz & surprise dance",
-      noteEs: "Con mi padre y los chambelanes", noteEn: "With my father and the chambelanes" },
+      noteEs: "Con mi padre y mis damas", noteEn: "With my father and my damas" },
     { time: "19:30", es: "Cena", en: "Dinner", noteEs: "", noteEn: "" },
     { time: "20:30", es: "Última muñeca y cambio de zapatillas", en: "Last doll & changing of the shoes",
       noteEs: "El momento que lo cambia todo", noteEn: "The moment everything changes" },
@@ -1117,8 +1131,6 @@ const T = {
     "details.reception": "La recepción",
     "details.dress": "Código de vestimenta",
     "details.gifts": "Mesa de regalos",
-    "dress.white": "Blanco", "dress.gold": "Dorado", "dress.champagne": "Champán",
-    "dress.reserved": "Estos tonos están reservados para la quinceañera y su corte.",
     "gifts.body": "Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción, o puedes consultar la mesa de regalos.",
     "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
     "rsvp.kicker": "No faltes",
@@ -1188,8 +1200,6 @@ const T = {
     "details.reception": "The reception",
     "details.dress": "Dress code",
     "details.gifts": "Gift registry",
-    "dress.white": "White", "dress.gold": "Gold", "dress.champagne": "Champagne",
-    "dress.reserved": "These shades are reserved for the quinceañera and her court.",
     "gifts.body": "Your presence is the gift I am most looking forward to. If you would also like to bring something, there will be a lluvia de sobres — an envelope shower — during the reception, or you can use the registry.",
     "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
     "rsvp.kicker": "Don't miss it",
@@ -1420,19 +1430,21 @@ function renderCourt() {
     return;
   }
 
-  const total = damas.length + chambelanes.length;
-  sub.textContent = lang === "es"
-    ? total + " amigos, y yo la quinceava"
-    : total + " friends, and me as the fifteenth";
-
   const groups = [
     { label: t("court.damas"), people: damas, honorKey: "court.honorWoman" },
     { label: t("court.chambelanes"), people: chambelanes, honorKey: "court.honorMan" }
-  ];
+  ].filter((group) => group.people.length);
+
+  // With a single group the section heading already names it, so the
+  // group label would only repeat itself.
+  const showLabels = groups.length > 1;
+  sub.textContent = showLabels
+    ? groups.map((g) => g.people.length + " " + g.label.toLowerCase()).join(lang === "es" ? " y " : " and ")
+    : "";
+
   for (const group of groups) {
-    if (!group.people || !group.people.length) continue;
     const wrap = el("div", "court-group");
-    wrap.appendChild(el("div", "court-label", group.label));
+    if (showLabels) wrap.appendChild(el("div", "court-label", group.label));
     const grid = el("div", "court-grid");
     for (const person of group.people) {
       const isObj = typeof person === "object" && person !== null;
@@ -1444,6 +1456,29 @@ function renderCourt() {
     wrap.appendChild(grid);
     box.appendChild(wrap);
   }
+}
+
+function renderDress() {
+  $("#dress-code").textContent = CONFIG.dress[lang];
+
+  const box = $("#swatches");
+  box.textContent = "";
+
+  function swatch(item, crossed) {
+    const cell = el("div", crossed ? "swatch no" : "swatch");
+    const chip = el("i");
+    chip.style.background = item.color;
+    cell.appendChild(chip);
+    cell.appendChild(el("span", null, item[lang]));
+    box.appendChild(cell);
+  }
+
+  (CONFIG.dress.avoid || []).forEach((item) => swatch(item, true));
+  if (CONFIG.dress.court) swatch(CONFIG.dress.court, false);
+
+  const note = $("#dress-note");
+  note.hidden = !CONFIG.dress.note;
+  note.textContent = CONFIG.dress.note ? CONFIG.dress.note[lang] : "";
 }
 
 function renderRegistry() {
@@ -1504,7 +1539,6 @@ function applyLanguage() {
   }
   $("#party-name").textContent = CONFIG.party.name;
   $("#party-addr").textContent = [CONFIG.party.address, formatTime(PARTY)].filter(Boolean).join(" · ");
-  $("#dress-code").textContent = CONFIG.dress[lang];
   $("#hashtag").textContent = CONFIG.hashtag;
 
   $("#rsvp-deadline").textContent = lang === "es"
@@ -1514,6 +1548,7 @@ function applyLanguage() {
   renderMaps("#party-maps", CONFIG.party);
   renderItinerary();
   renderCourt();
+  renderDress();
   renderRegistry();
   renderWishes(lastWishes);
   updateTally(lastTally);

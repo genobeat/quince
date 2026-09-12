@@ -43,13 +43,16 @@ Everything about the event lives in one `CONFIG` object near the top of the
   switches it back on if that ever changes.
 - `parents`, `godparents` — lists of names, joined with "y" or "and" to match
   the language. An empty list drops that line entirely.
-- `dress` — separate `es` / `en` strings
+- `dress` — `es`/`en` for the headline rule, plus `avoid` (a list of colors
+  rendered as crossed-out swatches), `court` (a plain swatch showing what the
+  court wears), and an optional `note` line under them
 - `registry` — an array of `{ label, url }`; leave it empty to show only the
   lluvia de sobres
 - `court.damas`, `court.chambelanes` — plain strings, or
   `{ name: "...", honor: true }` to mark the dama/chambelán de honor. While both
-  lists are empty the section shows a "to be announced" note instead, which is
-  the current state
+  lists are empty the section shows a "to be announced" note instead. When only
+  one of the two lists has names, the group headings are dropped — the section
+  title already names the group — and the count subtitle is omitted
 - `itinerary` — each entry has `time`, `es`, `en`, and optional `noteEs`/`noteEn`
 - `whatsapp`, `email` — used by the fallback RSVP mode below
 - `hashtag`
@@ -66,8 +69,6 @@ The page renders cleanly with these blank, but they are the open items:
 
 - **Times.** The reception is set to 6:00 pm and the rest of the itinerary
   follows from it. Every time in `CONFIG.itinerary` is a placeholder.
-- **The court.** `court.damas` and `court.chambelanes`.
-- **Padrinos.** `godparents` — the line is hidden until it has names.
 - **Registry.** `registry` is empty, so only the lluvia de sobres shows.
 - **Email.** `email` is empty, so the RSVP panel offers WhatsApp, text message
   and copy-to-paste but no email option. Add an address to turn it on.
