@@ -20,6 +20,18 @@ DESCRIPTION="Invitación interactiva de XV años — itinerario, corte de honor,
 {
   cat <<HEAD
 <!doctype html>
+<!--
+  ============================================================
+  GENERATED FILE - DO NOT EDIT.
+
+  This file is built from src/page.html by scripts/build.sh, and any
+  edit made here is overwritten on the next build. Change the event
+  details in the CONFIG block of src/page.html instead, then run:
+
+      ./scripts/build.sh
+
+  ============================================================
+-->
 <html lang="es">
 <head>
 <meta charset="utf-8">
