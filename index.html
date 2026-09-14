@@ -955,6 +955,10 @@ body.gated { overflow: hidden; }
           <div class="host-role" data-i18n="invite.godparents">Mis padrinos</div>
           <div class="host-name" id="host-godparents">Miguel Ángel Delgado y Rosa María Ontiveros</div>
         </div>
+        <div id="hosts-thanks">
+          <div class="host-role" data-i18n="invite.thanks">Agradecimiento especial</div>
+          <div class="host-name" id="host-thanks">Dolores Acosta</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1159,8 +1163,9 @@ const CONFIG = {
   rsvpBy:    "2026-09-30T23:59:00",
 
   // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
-  parents:    ["Adriana Valdez", "Jose Valdes"],
+  parents:    ["Adriana Valdez", "Rodrigo Valdes"],
   godparents: ["Lucas Herrera", "Marina Sauceda"],
+  thanks:     ["Dolores Acosta"],   // an extra line of gratitude; empty hides it
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
   mass: null,
@@ -1261,6 +1266,7 @@ const T = {
     "invite.verse": "Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.",
     "invite.parents": "Mis padres",
     "invite.godparents": "Mis padrinos",
+    "invite.thanks": "Agradecimiento especial",
     "order.kicker": "El orden del día",
     "order.title": "Itinerario",
     "court.kicker": "Quienes bailan conmigo",
@@ -1334,6 +1340,7 @@ const T = {
     "invite.verse": "Some moments life keeps with particular care. With a heart full of gratitude to God and to life, we invite you to join us in the celebration of my fifteenth year.",
     "invite.parents": "My parents",
     "invite.godparents": "My godparents",
+    "invite.thanks": "Special thanks",
     "order.kicker": "How the day unfolds",
     "order.title": "Itinerary",
     "court.kicker": "Those who dance with me",
@@ -1704,8 +1711,10 @@ function applyLanguage() {
   // The hosting lines only appear once there are names to put in them.
   $("#hosts-parents").hidden = !nameList(CONFIG.parents);
   $("#hosts-godparents").hidden = !nameList(CONFIG.godparents);
+  $("#hosts-thanks").hidden = !nameList(CONFIG.thanks);
   $("#host-parents").textContent = nameList(CONFIG.parents);
   $("#host-godparents").textContent = nameList(CONFIG.godparents);
+  $("#host-thanks").textContent = nameList(CONFIG.thanks);
 
   const orderSub = document.querySelector("#itinerary .sub");
   orderSub.textContent = weekdayOf(MAIN) + " " + formatDate(MAIN);
