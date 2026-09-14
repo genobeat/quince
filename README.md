@@ -10,14 +10,29 @@ itinerary, the court of honor, venue and dress-code details, a gift registry,
 and RSVP with a live wishes wall. Fully bilingual (Spanish / English) with a
 language toggle that remembers the guest's choice.
 
-The design is a committed single visual world — midnight navy and brushed
+The design is a committed single visual world — deep navy and brushed
 silver, Pinyon Script for the name, Cinzel for engraved headings, Cormorant
 Garamond for body copy — so it reads the same on any device or host theme.
 
-The metal is three tokens at the top of the stylesheet: `--metal`, `--metal-2`
-and `--foil`. They are named for the role rather than the colour, so changing
-the whole page to gold or rose gold is an edit to those three values (plus the
-seal's own gradient in `.seal-btn`).
+### Colour
+
+Two groups of tokens at the top of the stylesheet carry the whole design.
+
+**The metal** is `--metal`, `--metal-2` and `--foil`. Named for the role rather
+than the colour, so changing the page to gold or rose gold is an edit to those
+three values (plus the seal's own gradient in `.seal-btn`).
+
+**The ground** is `--midnight`, `--midnight-2`, `--surface` and `--plum`, plus
+eight translucent derivatives (`--veil`, `--field`, `--panel-top`,
+`--panel-bot`, `--panel-flat`, `--bloom`, `--bloom-soft`, `--bloom-cool`). No
+dark value is written anywhere else: form fields, the RSVP card, countdown
+cells, the language switch, the music button, wish cards and the whole envelope
+all resolve through these, so changing the background means editing this block
+and nothing else.
+
+`:root` also declares `color-scheme: dark`, without which native controls —
+radio dots, number spinners, scrollbars — render as pale chrome on the dark
+page.
 
 ## Files
 

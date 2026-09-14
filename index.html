@@ -40,10 +40,27 @@ img { max-width: 100%; }
 [hidden] { display: none !important; }
 
 :root {
-  --midnight:   #080B18;
-  --midnight-2: #0D1225;
-  --surface:    #141C36;
-  --plum:       #2A1B3D;
+  /* Native controls — radio dots, number spinners, scrollbars — render in
+     light mode otherwise, which shows through as pale chrome on a dark page. */
+  color-scheme: dark;
+
+  /* The ground and the surfaces layered on it. Every dark value on the
+     page derives from these four, so changing the background is an edit
+     here and nowhere else. */
+  --midnight:   #00022E;
+  --midnight-2: #04073A;
+  --surface:    #0C1250;
+  --plum:       #241C52;
+
+  /* Translucent derivatives of the ground above. */
+  --veil:       rgba(0, 2, 46, 0.74);      /* chrome floating over content */
+  --field:      rgba(0, 2, 46, 0.55);      /* form inputs */
+  --panel-top:  rgba(12, 18, 80, 0.60);    /* raised panel, lit edge */
+  --panel-bot:  rgba(0, 2, 46, 0.32);      /* raised panel, shaded edge */
+  --panel-flat: rgba(12, 18, 80, 0.42);    /* single-tone panel */
+  --bloom:      rgba(36, 28, 82, 0.85);    /* the light behind the page */
+  --bloom-soft: rgba(36, 28, 82, 0.45);
+  --bloom-cool: rgba(12, 18, 80, 0.60);
   --metal:      #A3B1C6;
   --metal-2:    #AFBFD6;
   --metal-dk:   #6B7486;
@@ -88,9 +105,9 @@ body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(60rem 40rem at 50% -8%, rgba(42, 27, 61, 0.85), transparent 70%),
-    radial-gradient(45rem 35rem at 110% 60%, rgba(42, 27, 61, 0.45), transparent 70%),
-    radial-gradient(40rem 30rem at -10% 90%, rgba(20, 28, 54, 0.7), transparent 70%);
+    radial-gradient(60rem 40rem at 50% -8%, var(--bloom), transparent 70%),
+    radial-gradient(45rem 35rem at 110% 60%, var(--bloom-soft), transparent 70%),
+    radial-gradient(40rem 30rem at -10% 90%, var(--bloom-cool), transparent 70%);
 }
 
 .page { position: relative; z-index: 1; }
@@ -160,7 +177,7 @@ a { color: var(--metal-2); }
   pointer-events: auto;
   display: inline-flex;
   border: 1px solid var(--line);
-  background: rgba(8, 11, 24, 0.72);
+  background: var(--veil);
   backdrop-filter: blur(6px);
 }
 .langswitch button {
@@ -233,7 +250,7 @@ a { color: var(--metal-2); }
 }
 .cd-cell {
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(20, 28, 54, 0.6), rgba(8, 11, 24, 0.35));
+  background: linear-gradient(180deg, var(--panel-top), var(--panel-bot));
   padding: 14px 4px 11px;
 }
 .cd-num {
@@ -429,7 +446,7 @@ a { color: var(--metal-2); }
 /* ---------- RSVP ---------- */
 .rsvp-card {
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(20, 28, 54, 0.55), rgba(8, 11, 24, 0.3));
+  background: linear-gradient(180deg, var(--panel-top), var(--panel-bot));
   padding: clamp(22px, 5vw, 38px);
 }
 .field { display: grid; gap: 0.4rem; margin-bottom: 1.2rem; }
@@ -445,7 +462,7 @@ input[type="text"], input[type="number"], textarea, select {
   font-family: var(--body);
   font-size: 1.02rem;
   color: var(--cream);
-  background: rgba(8, 11, 24, 0.6);
+  background: var(--field);
   border: 1px solid var(--line-soft);
   padding: 11px 13px;
   transition: border-color 0.25s ease;
@@ -562,7 +579,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 .wishes { display: grid; gap: 1rem; }
 .wish {
   border-left: 2px solid var(--metal);
-  background: rgba(20, 28, 54, 0.4);
+  background: var(--panel-flat);
   padding: 16px 18px;
 }
 .wish-msg { font-style: italic; color: var(--cream); }
@@ -610,7 +627,7 @@ footer {
   place-items: center;
   color: var(--foil);
   border: 1px solid var(--line);
-  background: rgba(13, 18, 37, 0.82);
+  background: var(--veil);
   backdrop-filter: blur(6px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
@@ -668,7 +685,7 @@ body.gated { overflow: hidden; }
   gap: 2.4rem;
   padding: 26px;
   background:
-    radial-gradient(50rem 36rem at 50% 38%, rgba(42, 27, 61, 0.9), transparent 72%),
+    radial-gradient(50rem 36rem at 50% 38%, var(--bloom), transparent 72%),
     var(--midnight);
   transition: opacity 0.8s ease;
 }
@@ -691,7 +708,7 @@ body.gated { overflow: hidden; }
   inset: 0;
   z-index: 1;
   transform: translateZ(0px);
-  background: linear-gradient(168deg, #221636, #0D1225);
+  background: linear-gradient(168deg, var(--plum), var(--midnight-2));
   border: 1px solid var(--line);
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
 }
@@ -705,7 +722,7 @@ body.gated { overflow: hidden; }
   padding: clamp(16px, 4vw, 24px) 16px;
   text-align: center;
   background: linear-gradient(170deg, #F6F0E2, #E7DDC8);
-  color: #2A1B3D;
+  color: #3A4354;
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
   transform: translateY(5%) translateZ(1px) scale(0.97);
   transition: transform 1s cubic-bezier(0.22, 0.9, 0.3, 1) 0.5s;
@@ -742,7 +759,7 @@ body.gated { overflow: hidden; }
   background:
     linear-gradient(150deg, transparent calc(50% - 1px), rgba(194, 204, 219, 0.16) 50%, transparent calc(50% + 1px)),
     linear-gradient(210deg, transparent calc(50% - 1px), rgba(194, 204, 219, 0.16) 50%, transparent calc(50% + 1px)),
-    linear-gradient(172deg, #1A1130, #0B1024);
+    linear-gradient(172deg, var(--midnight-2), var(--midnight));
   border: 1px solid var(--line);
 }
 
@@ -755,7 +772,7 @@ body.gated { overflow: hidden; }
   transform: translateZ(3px) rotateX(0deg);
   transition: transform 1.05s cubic-bezier(0.62, 0.02, 0.3, 1) 0.28s;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  background: linear-gradient(178deg, #241738, #150E2A 62%, #100B22);
+  background: linear-gradient(178deg, var(--plum), var(--midnight-2) 62%, var(--midnight));
   border-top: 1px solid var(--line);
 }
 
@@ -1133,7 +1150,7 @@ const CONFIG = {
     es: "Formal. El azul marino está reservado — es el color de mi vestido.",
     en: "Formal. Navy blue is reserved — it's the color of my dress.",
     avoid: [
-      { color: "#1E3A6E", es: "Azul marino", en: "Navy blue" }
+      { color: "#2A5595", es: "Azul marino", en: "Navy blue" }
     ],
     court: {
       color: "linear-gradient(140deg, #F4DBBC, #D6AC87)",
