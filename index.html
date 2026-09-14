@@ -315,6 +315,7 @@ a { color: var(--metal-2); }
   margin-bottom: 0.35rem;
 }
 .host-name { font-size: 1.1rem; color: var(--cream); }
+.host-list { display: grid; gap: 0.34rem; }
 
 /* ---------- itinerary ---------- */
 .timeline { list-style: none; margin: 0; padding: 0; position: relative; }
@@ -957,7 +958,7 @@ body.gated { overflow: hidden; }
         </div>
         <div id="hosts-thanks">
           <div class="host-role" data-i18n="invite.thanks">Agradecimiento especial</div>
-          <div class="host-name" id="host-thanks">Dolores Acosta</div>
+          <div class="host-name host-list" id="host-thanks">Dolores Acosta</div>
         </div>
       </div>
     </div>
@@ -1165,7 +1166,13 @@ const CONFIG = {
   // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
   parents:    ["Adriana Valdez", "Rodrigo Valdes"],
   godparents: ["Lucas Herrera", "Marina Sauceda"],
-  thanks:     ["Dolores Acosta"],   // an extra line of gratitude; empty hides it
+  thanks: [
+    "Dolores Acosta",
+    "Ramon Cervantes",
+    "Guillermina Valdez",
+    "Saul y Mary Arroyo",
+    "Gabriela"
+  ],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
   mass: null,
@@ -1711,10 +1718,12 @@ function applyLanguage() {
   // The hosting lines only appear once there are names to put in them.
   $("#hosts-parents").hidden = !nameList(CONFIG.parents);
   $("#hosts-godparents").hidden = !nameList(CONFIG.godparents);
-  $("#hosts-thanks").hidden = !nameList(CONFIG.thanks);
+  $("#hosts-thanks").hidden = !(CONFIG.thanks || []).length;
   $("#host-parents").textContent = nameList(CONFIG.parents);
   $("#host-godparents").textContent = nameList(CONFIG.godparents);
-  $("#host-thanks").textContent = nameList(CONFIG.thanks);
+  const thanksBox = $("#host-thanks");
+  thanksBox.textContent = "";
+  for (const name of CONFIG.thanks || []) thanksBox.appendChild(el("div", null, name));
 
   const orderSub = document.querySelector("#itinerary .sub");
   orderSub.textContent = weekdayOf(MAIN) + " " + formatDate(MAIN);
