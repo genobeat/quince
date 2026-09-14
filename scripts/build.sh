@@ -15,6 +15,7 @@ SRC="src/page.html"
 OUT="index.html"
 
 TITLE_LINE="$(grep -m1 '<title>' "$SRC")"
+THEME="$(grep -m1 -oE -- '--midnight: *#[0-9A-Fa-f]{6}' "$SRC" | grep -oE '#[0-9A-Fa-f]{6}')"
 DESCRIPTION="Invitación interactiva de XV años — itinerario, corte de honor, ubicación y confirmación de asistencia."
 
 {
@@ -37,7 +38,7 @@ DESCRIPTION="Invitación interactiva de XV años — itinerario, corte de honor,
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#080B18">
+<meta name="theme-color" content="${THEME}">
 <meta name="description" content="${DESCRIPTION}">
 <meta property="og:type" content="website">
 <meta property="og:description" content="${DESCRIPTION}">
