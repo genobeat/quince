@@ -276,6 +276,50 @@ a { color: var(--metal-2); }
   margin-top: 2.4rem;
 }
 
+/* ---------- portrait ---------- */
+.portrait-section { padding-block: 0 clamp(34px, 5vw, 52px); }
+.portrait {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.portrait-frame {
+  width: min(100%, 340px);
+  aspect-ratio: 4 / 5;
+  padding: 9px;                      /* the mat, inside the outer hairline */
+  border: 1px solid var(--line);
+  background: var(--panel-flat);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+.portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--line);
+}
+.portrait-empty {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 0.6rem;
+  padding: 18px;
+  text-align: center;
+  border: 1px dashed var(--line);
+}
+.portrait-empty span {
+  font-family: var(--engrave);
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--metal-2);
+}
+.portrait-empty small {
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
 /* ---------- fleuron divider ---------- */
 .fleuron {
   display: flex;
@@ -937,6 +981,20 @@ body.gated { overflow: hidden; }
     </div>
   </section>
 
+  <section class="portrait-section">
+    <div class="wrap">
+      <figure class="portrait">
+        <div class="portrait-frame">
+          <img id="portrait-img" alt="" hidden>
+          <div class="portrait-empty" id="portrait-empty">
+            <span data-i18n="photo.placeholder">Tu foto aquí</span>
+            <small data-i18n="photo.hint">Retrato vertical · 4:5</small>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
   <div class="fleuron" aria-hidden="true">
     <span class="rule"></span>
     <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
@@ -1163,8 +1221,8 @@ const CONFIG = {
     { es: "Madrina de muñeca", en: "Last doll sponsor",
       names: ["Sally Castro"] },
     { es: "Agradecimiento especial", en: "Special thanks",
-      names: ["Dolores Acosta", "Ramon Cervantes", "Guillermina Valdez",
-              "Gabriela y Ricardo Flores", "Mariel Lopez"] }
+      names: ["Gabriela y Ricardo Flores", "Ramon Cervantes",
+              "Guillermina Valdez", "Mariel Lopez", "Dolores Acosta"] }
   ],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
@@ -1194,6 +1252,11 @@ const CONFIG = {
 
   // --- Gift registry. Leave the array empty to show only the envelope shower. ---
   registry: [],
+
+  // A portrait between the countdown and the invitation. Drop a file into
+  // photos/ and point src at it; "" leaves a placeholder frame in its place
+  // so the layout can still be seen.
+  photo: { src: "" },
 
   maxGuests: 5,        // the largest party a single RSVP may confirm
 
@@ -1263,6 +1326,8 @@ const T = {
     "hero.kicker": "Mis Quince Años",
     "cd.days": "Días", "cd.hours": "Horas", "cd.minutes": "Min", "cd.seconds": "Seg",
     "cd.today": "¡Hoy es el día!",
+    "photo.placeholder": "Tu foto aquí",
+    "photo.hint": "Retrato vertical · 4:5",
     "invite.verse": "Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.",
     "order.kicker": "El orden del día",
     "order.title": "Itinerario",
@@ -1334,6 +1399,8 @@ const T = {
     "hero.kicker": "My Quinceañera",
     "cd.days": "Days", "cd.hours": "Hours", "cd.minutes": "Min", "cd.seconds": "Sec",
     "cd.today": "Today is the day!",
+    "photo.placeholder": "Your photo here",
+    "photo.hint": "Portrait orientation · 4:5",
     "invite.verse": "Some moments life keeps with particular care. With a heart full of gratitude to God and to life, we invite you to join us in the celebration of my fifteenth year.",
     "order.kicker": "How the day unfolds",
     "order.title": "Itinerary",
@@ -1632,6 +1699,24 @@ function renderCourt() {
   }
 }
 
+function renderPhoto() {
+  const img = $("#portrait-img");
+  const empty = $("#portrait-empty");
+  const src = (CONFIG.photo && CONFIG.photo.src) || "";
+  img.hidden = !src;
+  empty.hidden = !!src;
+  if (src) {
+    img.src = src;
+    img.alt = CONFIG.firstName + " " + CONFIG.lastName;
+  }
+}
+
+// A missing or unreadable file falls back to the frame rather than a broken image.
+$("#portrait-img").addEventListener("error", () => {
+  $("#portrait-img").hidden = true;
+  $("#portrait-empty").hidden = false;
+});
+
 function renderHosts() {
   const box = $("#hosts");
   box.textContent = "";
@@ -1741,6 +1826,7 @@ function applyLanguage() {
     : "Kindly reply by " + formatDate(DEADLINE);
 
   renderMaps("#party-maps", CONFIG.party);
+  renderPhoto();
   renderHosts();
   renderItinerary();
   renderCourt();
