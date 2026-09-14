@@ -922,19 +922,7 @@ body.gated { overflow: hidden; }
   <section>
     <div class="wrap center">
       <p class="verse" data-i18n="invite.verse">Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.</p>
-      <div class="hosts">
-        <div id="hosts-parents">
-          <div class="host-role" data-i18n="invite.parents">Mis padres</div>
-          <div class="host-name" id="host-parents">Carlos Ramírez Ibarra y Adriana Delgado Ontiveros</div>
-        </div>
-        <div id="hosts-godparents">
-          <div class="host-role" data-i18n="invite.godparents">Mis padrinos</div>
-          <div class="host-name" id="host-godparents">Miguel Ángel Delgado y Rosa María Ontiveros</div>
-        </div>
-        <div id="hosts-thanks">
-          <div class="host-role" data-i18n="invite.thanks">Agradecimiento especial</div>
-          <div class="host-name host-list" id="host-thanks">Dolores Acosta</div>
-        </div>
+      <div class="hosts" id="hosts"></div>
       </div>
     </div>
   </section>
@@ -1138,15 +1126,20 @@ const CONFIG = {
   partyTime: "2026-10-30T17:00:00",
   rsvpBy:    "2026-09-30T23:59:00",
 
-  // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
-  parents:    ["Adriana Valdez", "Rodrigo Valdes"],
-  godparents: ["Lucas Herrera", "Marina Sauceda"],
-  thanks: [
-    "Dolores Acosta",
-    "Ramon Cervantes",
-    "Guillermina Valdez",
-    "Saul y Mary Arroyo",
-    "Gabriela"
+  // --- Everyone named on the invitation, in order. A group of two or
+  //     fewer joins with "y"/"and" on one line; a longer one stacks. ---
+  honors: [
+    { es: "Mis padres", en: "My parents",
+      names: ["Adriana Valdes", "Rodrigo Valdes"] },
+    { es: "Mis padrinos", en: "My godparents",
+      names: ["Lucas Herrera", "Marina Sauceda"] },
+    { es: "Padrino de regalo sorpresa", en: "Surprise gift sponsor",
+      names: ["Saul y Mary Arroyo"] },
+    { es: "Padrino de muñeca", en: "Last doll sponsor",
+      names: ["Sally Castro"] },
+    { es: "Agradecimiento especial", en: "Special thanks",
+      names: ["Dolores Acosta", "Ramon Cervantes", "Guillermina Valdez",
+              "Gabriela", "Mariel Lopez"] }
   ],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
@@ -1211,11 +1204,11 @@ const CONFIG = {
 
   // --- The run of the evening ---
   itinerary: [
-    { time: "17:00", es: "Se abren las puertas", en: "Doors open",
+    { time: "17:00", es: "Recepción", en: "Reception",
       noteEs: "", noteEn: "" },
-    { time: "17:30", until: "19:00", es: "Cena", en: "Dinner",
+    { time: "17:00", until: "19:00", es: "Cena", en: "Dinner",
       noteEs: "", noteEn: "" },
-    // One stretch rather than six timed entries: these run back to back
+    // One stretch rather than five timed entries: these run back to back
     // between seven and eight, and no one needs a clock for each.
     { time: "19:00", until: "20:00", es: "Presentación", en: "Presentation",
       noteEs: "", noteEn: "",
@@ -1224,12 +1217,12 @@ const CONFIG = {
         { es: "Vals", en: "Waltz" },
         { es: "Baile con los padres", en: "Dance with Mom and Dad" },
         { es: "Última muñeca", en: "Last doll" },
-        { es: "Regalo sorpresa", en: "Surprise gift" },
-        { es: "Baile sorpresa", en: "Surprise dance" }
+        { es: "Regalo sorpresa", en: "Surprise gift" }
       ] },
     { time: "20:00", es: "Pista abierta", en: "Open dance floor",
       noteEs: "En cuanto llegue la banda", noteEn: "Once the banda arrives" },
-    { time: "21:00", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
+    { time: "21:00", es: "Brindis y baile sorpresa", en: "Toast & surprise dance",
+      noteEs: "", noteEn: "" },
     { time: "00:00", es: "Despedida", en: "Farewell", noteEs: "", noteEn: "" }
   ]
 };
@@ -1246,9 +1239,6 @@ const T = {
     "cd.days": "Días", "cd.hours": "Horas", "cd.minutes": "Min", "cd.seconds": "Seg",
     "cd.today": "¡Hoy es el día!",
     "invite.verse": "Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.",
-    "invite.parents": "Mis padres",
-    "invite.godparents": "Mis padrinos",
-    "invite.thanks": "Agradecimiento especial",
     "order.kicker": "El orden del día",
     "order.title": "Itinerario",
     "court.kicker": "Quienes bailan conmigo",
@@ -1320,9 +1310,6 @@ const T = {
     "cd.days": "Days", "cd.hours": "Hours", "cd.minutes": "Min", "cd.seconds": "Sec",
     "cd.today": "Today is the day!",
     "invite.verse": "Some moments life keeps with particular care. With a heart full of gratitude to God and to life, we invite you to join us in the celebration of my fifteenth year.",
-    "invite.parents": "My parents",
-    "invite.godparents": "My godparents",
-    "invite.thanks": "Special thanks",
     "order.kicker": "How the day unfolds",
     "order.title": "Itinerary",
     "court.kicker": "Those who dance with me",
@@ -1620,6 +1607,24 @@ function renderCourt() {
   }
 }
 
+function renderHosts() {
+  const box = $("#hosts");
+  box.textContent = "";
+  for (const group of CONFIG.honors || []) {
+    if (!group.names || !group.names.length) continue;
+    const block = el("div");
+    block.appendChild(el("div", "host-role", lang === "es" ? group.es : group.en));
+    if (group.names.length > 2) {
+      const stack = el("div", "host-name host-list");
+      for (const name of group.names) stack.appendChild(el("div", null, name));
+      block.appendChild(stack);
+    } else {
+      block.appendChild(el("div", "host-name", nameList(group.names)));
+    }
+    box.appendChild(block);
+  }
+}
+
 function renderDress() {
   $("#dress-code").textContent = CONFIG.dress[lang];
 
@@ -1691,14 +1696,6 @@ function applyLanguage() {
   }
 
   // The hosting lines only appear once there are names to put in them.
-  $("#hosts-parents").hidden = !nameList(CONFIG.parents);
-  $("#hosts-godparents").hidden = !nameList(CONFIG.godparents);
-  $("#hosts-thanks").hidden = !(CONFIG.thanks || []).length;
-  $("#host-parents").textContent = nameList(CONFIG.parents);
-  $("#host-godparents").textContent = nameList(CONFIG.godparents);
-  const thanksBox = $("#host-thanks");
-  thanksBox.textContent = "";
-  for (const name of CONFIG.thanks || []) thanksBox.appendChild(el("div", null, name));
 
   const orderSub = document.querySelector("#itinerary .sub");
   orderSub.textContent = weekdayOf(MAIN) + " " + formatDate(MAIN);
@@ -1719,6 +1716,7 @@ function applyLanguage() {
     : "Kindly reply by " + formatDate(DEADLINE);
 
   renderMaps("#party-maps", CONFIG.party);
+  renderHosts();
   renderItinerary();
   renderCourt();
   renderDress();
