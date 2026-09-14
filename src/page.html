@@ -302,13 +302,13 @@ a { color: var(--metal-2); }
   width: 1px;
   background: linear-gradient(180deg, transparent, var(--line) 12%, var(--line) 88%, transparent);
 }
-.timeline li {
+.timeline > li {
   position: relative;
   padding-left: 30px;
   padding-bottom: 1.9rem;
 }
-.timeline li:last-child { padding-bottom: 0; }
-.timeline li::before {
+.timeline > li:last-child { padding-bottom: 0; }
+.timeline > li::before {
   content: "";
   position: absolute;
   left: 1px;
@@ -327,6 +327,31 @@ a { color: var(--metal-2); }
 }
 .tl-title { font-size: 1.14rem; color: var(--cream); margin-top: 0.1rem; }
 .tl-note { font-size: 0.98rem; color: var(--muted); font-style: italic; }
+
+/* the steps inside one stretch of the evening, which share its time */
+.tl-items {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.34rem;
+}
+.tl-items li {
+  position: relative;
+  padding-left: 17px;
+  font-size: 1rem;
+  color: var(--cream);
+}
+.tl-items li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 4px;
+  height: 4px;
+  background: var(--metal);
+  transform: rotate(45deg);
+}
 
 /* ---------- court ---------- */
 .court-group + .court-group { margin-top: 2.8rem; }
@@ -1097,19 +1122,19 @@ body.gated { overflow: hidden; }
    ============================================================ */
 const CONFIG = {
   // --- The quinceañera ---
-  firstName: "Ashley",
+  firstName: "Ashley Camila",
   lastName: "Valdez",
-  initials: "AV",
+  initials: "ACV",
 
   // --- When. Local time, 24h.
   //     massTime: set to null when there is no church service, or give it a
   //     time to switch the Mass back on everywhere it appears. ---
   massTime:  null,
-  partyTime: "2026-10-30T17:30:00",
+  partyTime: "2026-10-30T17:00:00",
   rsvpBy:    "2026-09-30T23:59:00",
 
   // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
-  parents:    ["Adriana Valdez", "Rodrigo Valdez"],
+  parents:    ["Adriana Valdez", "Jose Valdes"],
   godparents: ["Lucas Herrera", "Marina Sauceda"],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
@@ -1174,18 +1199,22 @@ const CONFIG = {
 
   // --- The run of the evening ---
   itinerary: [
-    { time: "17:30", es: "Se abren las puertas", en: "Doors open",
+    { time: "17:00", es: "Se abren las puertas", en: "Doors open",
       noteEs: "", noteEn: "" },
     { time: "17:30", until: "19:00", es: "Cena", en: "Dinner",
-      noteEs: "Servida durante la primera hora y media",
-      noteEn: "Served through the first hour and a half" },
-    { time: "18:00", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
       noteEs: "", noteEn: "" },
-    { time: "19:00", es: "Vals", en: "Waltz",
-      noteEs: "Con mis damas, y después con mi madre y con mi padre",
-      noteEn: "With my damas, then with my mother and with my father" },
-    { time: "19:30", es: "Última muñeca y regalo sorpresa", en: "Last doll & surprise gift",
-      noteEs: "", noteEn: "" },
+    // One stretch rather than six timed entries: these run back to back
+    // between seven and eight, and no one needs a clock for each.
+    { time: "19:00", until: "20:00", es: "Presentación", en: "Presentation",
+      noteEs: "", noteEn: "",
+      items: [
+        { es: "Entrada de la quinceañera y su corte", en: "Grand entrance" },
+        { es: "Vals", en: "Waltz" },
+        { es: "Baile con los padres", en: "Dance with Mom and Dad" },
+        { es: "Última muñeca", en: "Last doll" },
+        { es: "Regalo sorpresa", en: "Surprise gift" },
+        { es: "Baile sorpresa", en: "Surprise dance" }
+      ] },
     { time: "20:00", es: "Pista abierta", en: "Open dance floor",
       noteEs: "En cuanto llegue la banda", noteEn: "Once the banda arrives" },
     { time: "21:00", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
@@ -1524,6 +1553,14 @@ function renderItinerary() {
     li.appendChild(el("div", "tl-title", lang === "es" ? item.es : item.en));
     const note = lang === "es" ? item.noteEs : item.noteEn;
     if (note) li.appendChild(el("div", "tl-note", note));
+
+    if (item.items && item.items.length) {
+      const list = el("ul", "tl-items");
+      for (const step of item.items) {
+        list.appendChild(el("li", null, lang === "es" ? step.es : step.en));
+      }
+      li.appendChild(list);
+    }
     list.appendChild(li);
   }
 }
