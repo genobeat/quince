@@ -995,8 +995,8 @@ body.gated { overflow: hidden; }
       </div>
 
       <div class="detail">
-        <div class="detail-kicker" data-i18n="details.gifts">Mesa de regalos</div>
-        <p data-i18n="gifts.body">Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción, o puedes consultar la mesa de regalos.</p>
+        <div class="detail-kicker" id="gifts-kicker">Lluvia de sobres</div>
+        <p id="gifts-body">Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción.</p>
         <div class="registry-list" id="registry"></div>
       </div>
     </div>
@@ -1034,7 +1034,7 @@ body.gated { overflow: hidden; }
 
           <div class="field" id="guests-field">
             <label for="f-guests" data-i18n="rsvp.guests">Número de personas (incluyéndote)</label>
-            <input type="number" id="f-guests" name="guests" min="1" max="12" step="1" value="1" inputmode="numeric">
+            <input type="number" id="f-guests" name="guests" min="1" max="5" step="1" value="1" inputmode="numeric">
           </div>
 
           <div class="field">
@@ -1122,19 +1122,19 @@ body.gated { overflow: hidden; }
    ============================================================ */
 const CONFIG = {
   // --- The quinceañera ---
-  firstName: "Ashley Camila",
+  firstName: "Ashley",
   lastName: "Valdez",
-  initials: "ACV",
+  initials: "AV",
 
   // --- When. Local time, 24h.
   //     massTime: set to null when there is no church service, or give it a
   //     time to switch the Mass back on everywhere it appears. ---
   massTime:  null,
-  partyTime: "2026-10-30T18:00:00",
+  partyTime: "2026-10-30T17:30:00",
   rsvpBy:    "2026-09-30T23:59:00",
 
   // --- Who is hosting. Lists, so the page joins them with "y" or "and". ---
-  parents:    ["Adriana Valdez", "Jose Valdez"],
+  parents:    ["Adriana Valdez", "Rodrigo Valdez"],
   godparents: ["Lucas Herrera", "Marina Sauceda"],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
@@ -1164,6 +1164,8 @@ const CONFIG = {
 
   // --- Gift registry. Leave the array empty to show only the envelope shower. ---
   registry: [],
+
+  maxGuests: 5,        // the largest party a single RSVP may confirm
 
   hashtag: "#LosXVdeAshley",
 
@@ -1197,19 +1199,22 @@ const CONFIG = {
 
   // --- The run of the evening ---
   itinerary: [
-    { time: "18:00", es: "Recepción y cóctel", en: "Reception & cocktails",
-      noteEs: "LUXOR abre sus puertas", noteEn: "Doors open at LUXOR" },
-    { time: "18:45", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
+    { time: "17:30", es: "Se abren las puertas", en: "Doors open",
       noteEs: "", noteEn: "" },
-    { time: "19:00", es: "Vals y baile sorpresa", en: "Waltz & surprise dance",
-      noteEs: "Con mi padre y mis damas", noteEn: "With my father and my damas" },
-    { time: "19:30", es: "Cena", en: "Dinner", noteEs: "", noteEn: "" },
-    { time: "20:30", es: "Última muñeca y cambio de zapatillas", en: "Last doll & changing of the shoes",
-      noteEs: "El momento que lo cambia todo", noteEn: "The moment everything changes" },
+    { time: "17:30", until: "19:00", es: "Cena", en: "Dinner",
+      noteEs: "Servida durante la primera hora y media",
+      noteEn: "Served through the first hour and a half" },
+    { time: "18:00", es: "Entrada de la quinceañera y su corte", en: "Grand entrance",
+      noteEs: "", noteEn: "" },
+    { time: "19:00", es: "Vals", en: "Waltz",
+      noteEs: "Con mis damas, y después con mi madre y con mi padre",
+      noteEn: "With my damas, then with my mother and with my father" },
+    { time: "19:30", es: "Última muñeca y regalo sorpresa", en: "Last doll & surprise gift",
+      noteEs: "", noteEn: "" },
+    { time: "20:00", es: "Pista abierta", en: "Open dance floor",
+      noteEs: "En cuanto llegue la banda", noteEn: "Once the banda arrives" },
     { time: "21:00", es: "Brindis", en: "Toast", noteEs: "", noteEn: "" },
-    { time: "21:30", es: "Baile", en: "Dancing",
-      noteEs: "Hasta que apaguen las luces", noteEn: "Until they turn the lights off" },
-    { time: "01:00", es: "Despedida", en: "Farewell", noteEs: "", noteEn: "" }
+    { time: "00:00", es: "Despedida", en: "Farewell", noteEs: "", noteEn: "" }
   ]
 };
 
@@ -1238,12 +1243,14 @@ const T = {
     "court.tbd": "Los nombres de la corte se anunciarán muy pronto.",
     "details.kicker": "Lo que necesitas saber",
     "details.title": "Detalles",
-    "details.sub": "Dónde, cómo vestir y la mesa de regalos",
+    "details.sub": "Dónde, cómo vestir y los regalos",
     "details.mass": "La misa",
     "details.reception": "La recepción",
     "details.dress": "Código de vestimenta",
     "details.gifts": "Mesa de regalos",
+    "details.giftsShower": "Lluvia de sobres",
     "gifts.body": "Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción, o puedes consultar la mesa de regalos.",
+    "gifts.bodyShower": "Tu presencia es el regalo que más ilusión me hace. Si además quieres tener un detalle, habrá lluvia de sobres durante la recepción.",
     "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
     "rsvp.kicker": "No faltes",
     "rsvp.title": "Confirma tu asistencia",
@@ -1251,7 +1258,7 @@ const T = {
     "rsvp.namePh": "Como aparece en tu invitación",
     "rsvp.attending": "¿Nos acompañas?",
     "rsvp.yes": "Ahí estaré", "rsvp.no": "No podré ir",
-    "rsvp.guests": "Número de personas (incluyéndote)",
+    "rsvp.guests": "Número de personas (incluyéndote, máx. {max})",
     "rsvp.song": "Canción que te haría bailar",
     "rsvp.songPh": "Opcional — para el DJ",
     "rsvp.message": "Un mensaje para {name}",
@@ -1309,12 +1316,14 @@ const T = {
     "court.tbd": "The names of the court will be announced soon.",
     "details.kicker": "What you need to know",
     "details.title": "Details",
-    "details.sub": "Where to go, what to wear, and the registry",
+    "details.sub": "Where to go, what to wear, and gifts",
     "details.mass": "The Mass",
     "details.reception": "The reception",
     "details.dress": "Dress code",
     "details.gifts": "Gift registry",
+    "details.giftsShower": "Envelope shower",
     "gifts.body": "Your presence is the gift I am most looking forward to. If you would also like to bring something, there will be a lluvia de sobres — an envelope shower — during the reception, or you can use the registry.",
+    "gifts.bodyShower": "Your presence is the gift I am most looking forward to. If you would also like to bring something, there will be a lluvia de sobres — an envelope shower — during the reception.",
     "map.google": "Google Maps", "map.apple": "Apple Maps", "map.waze": "Waze",
     "rsvp.kicker": "Don't miss it",
     "rsvp.title": "RSVP",
@@ -1322,7 +1331,7 @@ const T = {
     "rsvp.namePh": "As it appears on your invitation",
     "rsvp.attending": "Will you join us?",
     "rsvp.yes": "I'll be there", "rsvp.no": "I can't make it",
-    "rsvp.guests": "How many in your party (including you)",
+    "rsvp.guests": "How many in your party, including you (max {max})",
     "rsvp.song": "A song that would get you dancing",
     "rsvp.songPh": "Optional — for the DJ",
     "rsvp.message": "A message for {name}",
@@ -1518,14 +1527,25 @@ function renderMaps(containerId, place) {
   }
 }
 
+// "5:30 – 7:00 pm" rather than repeating the suffix on both ends
+function timeRange(from, to) {
+  const a = formatTime(from), b = formatTime(to);
+  return a.slice(-2) === b.slice(-2) ? a.slice(0, -3) + " – " + b : a + " – " + b;
+}
+
+function clockOf(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return new Date(2000, 0, 1, h, m);
+}
+
 function renderItinerary() {
   const list = $("#timeline");
   list.textContent = "";
   for (const item of CONFIG.itinerary) {
     const li = document.createElement("li");
-    const [hh, mm] = item.time.split(":").map(Number);
-    const when = new Date(2000, 0, 1, hh, mm);
-    li.appendChild(el("div", "tl-time", formatTime(when)));
+    const when = clockOf(item.time);
+    li.appendChild(el("div", "tl-time",
+      item.until ? timeRange(when, clockOf(item.until)) : formatTime(when)));
     li.appendChild(el("div", "tl-title", lang === "es" ? item.es : item.en));
     const note = lang === "es" ? item.noteEs : item.noteEn;
     if (note) li.appendChild(el("div", "tl-note", note));
@@ -1599,9 +1619,15 @@ function renderDress() {
 
 function renderRegistry() {
   const box = $("#registry");
+  const links = CONFIG.registry || [];
   box.textContent = "";
-  if (!CONFIG.registry || !CONFIG.registry.length) return;
-  for (const r of CONFIG.registry) {
+
+  // With no registry the section is about the envelope shower, and saying
+  // "consulta la mesa de regalos" would point guests at nothing.
+  $("#gifts-kicker").textContent = t(links.length ? "details.gifts" : "details.giftsShower");
+  $("#gifts-body").textContent = t(links.length ? "gifts.body" : "gifts.bodyShower");
+  if (!links.length) return;
+  for (const r of links) {
     const a = el("a", "maplink", r.label);
     a.href = r.url;
     a.target = "_blank";
@@ -1617,7 +1643,7 @@ function applyLanguage() {
     const key = node.getAttribute("data-i18n");
     let value = t(key);
     if (typeof value === "string") {
-      node.textContent = value.replace("{name}", CONFIG.firstName);
+      node.textContent = value.replace("{name}", CONFIG.firstName).replace("{max}", CONFIG.maxGuests);
     }
   });
   $$("[data-i18n-ph]").forEach((node) => {
@@ -1655,6 +1681,7 @@ function applyLanguage() {
   }
   $("#party-name").textContent = CONFIG.party.name;
   $("#party-addr").textContent = [CONFIG.party.address, formatTime(PARTY)].filter(Boolean).join(" · ");
+  $("#f-guests").max = CONFIG.maxGuests;
   $("#hashtag").textContent = CONFIG.hashtag;
 
   $("#rsvp-deadline").textContent = lang === "es"
@@ -1761,7 +1788,7 @@ function readForm() {
   return {
     name: (data.get("name") || "").toString().trim().slice(0, 80),
     attending: attending,
-    guests: attending === "si" ? Math.max(1, Math.min(12, Number(data.get("guests")) || 1)) : 0,
+    guests: attending === "si" ? Math.max(1, Math.min(CONFIG.maxGuests, Number(data.get("guests")) || 1)) : 0,
     song: (data.get("song") || "").toString().trim().slice(0, 120),
     message: message,
     hasMessage: message.length > 0,
