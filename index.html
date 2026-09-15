@@ -459,6 +459,12 @@ a { color: var(--metal-2); }
 
 /* ---------- details ---------- */
 .detail + .detail { margin-top: 2.6rem; padding-top: 2.6rem; border-top: 1px solid var(--line-soft); }
+#dress-code {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
 .detail-kicker {
   font-family: var(--engrave);
   font-size: 0.62rem;
@@ -1065,7 +1071,10 @@ body.gated { overflow: hidden; }
 
       <div class="detail">
         <div class="detail-kicker" data-i18n="details.dress">Código de vestimenta</div>
-        <p id="dress-code">Formal. El azul marino está reservado — es el color de mi vestido.</p>
+        <div id="dress-code">
+          <div id="dress-code-main">Formal</div>
+          <div id="dress-code-reserved">El azul marino está reservado para la quinceañera.</div>
+        </div>
         <div class="swatches" id="swatches"></div>
         <p class="hint" id="dress-note" style="margin-top:1rem"></p>
       </div>
@@ -1235,8 +1244,12 @@ const CONFIG = {
   // --- Dress code. `avoid` renders a crossed-out swatch per colour;
   //     `court` renders a plain one showing what the court is wearing. ---
   dress: {
-    es: "Formal. El azul marino está reservado — es el color de mi vestido.",
-    en: "Formal. Navy blue is reserved — it's the color of my dress.",
+    es: "Formal",
+    en: "Formal",
+    reserved: {
+      es: "El azul marino está reservado para la quinceañera.",
+      en: "Navy blue is reserved for the quinceañera."
+    },
     avoid: [
       { color: "#2A5595", es: "Azul marino", en: "Navy blue" }
     ],
@@ -1736,7 +1749,8 @@ function renderHosts() {
 }
 
 function renderDress() {
-  $("#dress-code").textContent = CONFIG.dress[lang];
+  $("#dress-code-main").textContent = CONFIG.dress[lang];
+  $("#dress-code-reserved").textContent = CONFIG.dress.reserved[lang];
 
   const box = $("#swatches");
   box.textContent = "";
