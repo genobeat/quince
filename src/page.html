@@ -1241,6 +1241,12 @@ const CONFIG = {
   // so the layout can still be seen.
   photo: { src: "photos/photo.jpg" },
 
+  // Messages for the wishes wall, added by hand as replies come in.
+  // Newest first reads best, since the top of the wall is what people see.
+  wishes: [
+    // { name: "Nombre", message: "Su mensaje" },
+  ],
+
   hashtag: "#LosXVdeAshley",
 
   // --- Background music. Drop an .mp3 into the audio/ folder and point
@@ -1340,7 +1346,7 @@ const T = {
     "rsvp.songPh": "Opcional — para el DJ",
     "rsvp.message": "Un mensaje para {name}",
     "rsvp.messagePh": "Opcional",
-    "rsvp.publicNote": "Los mensajes se muestran en el muro de buenos deseos, más abajo.",
+    "rsvp.publicNote": "Tu mensaje puede aparecer en el muro de buenos deseos, más abajo.",
     "rsvp.submit": "Enviar confirmación",
     "rsvp.sending": "Enviando…",
     "rsvp.edit": "Editar mi respuesta",
@@ -1365,7 +1371,7 @@ const T = {
     "wishes.kicker": "De parte de todos",
     "wishes.title": "Muro de buenos deseos",
     "wishes.sub": "Mensajes de quienes ya confirmaron",
-    "wishes.empty": "Aún no hay mensajes. Deja el primero al confirmar tu asistencia.",
+    "wishes.empty": "Los mensajes se publican conforme llegan las confirmaciones.",
     "footer.note": "Comparte tus fotos de la noche con este hashtag.",
     "music.play": "Reproducir música",
     "music.pause": "Pausar música",
@@ -1412,7 +1418,7 @@ const T = {
     "rsvp.songPh": "Optional — for the DJ",
     "rsvp.message": "A message for {name}",
     "rsvp.messagePh": "Optional",
-    "rsvp.publicNote": "Messages appear on the wishes wall further down the page.",
+    "rsvp.publicNote": "Your message may appear on the wishes wall further down the page.",
     "rsvp.submit": "Send my RSVP",
     "rsvp.sending": "Sending…",
     "rsvp.edit": "Edit my reply",
@@ -1437,7 +1443,7 @@ const T = {
     "wishes.kicker": "From everyone",
     "wishes.title": "Wishes wall",
     "wishes.sub": "Messages from guests who have replied",
-    "wishes.empty": "No messages yet. Leave the first one when you RSVP.",
+    "wishes.empty": "Messages are posted as replies come in.",
     "footer.note": "Share your photos from the night with this hashtag.",
     "music.play": "Play music",
     "music.pause": "Pause music",
@@ -2028,8 +2034,14 @@ $("#send-back").addEventListener("click", () => {
 });
 
 /* ---------- wishes wall + running tally ---------- */
-function renderWishes(list) {
-  lastWishes = list;
+function renderWishes(stored) {
+  lastWishes = stored;
+  // The hand-added ones come first; stored replies only exist where the
+  // page can save them, and follow underneath.
+  const list = (CONFIG.wishes || [])
+    .filter((w) => w && w.message)
+    .concat(stored || []);
+
   const box = $("#wishes");
   box.textContent = "";
   $("#wishes-empty").hidden = list.length > 0;
