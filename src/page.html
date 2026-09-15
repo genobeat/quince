@@ -1092,11 +1092,6 @@ body.gated { overflow: hidden; }
             </div>
           </fieldset>
 
-          <div class="field" id="guests-field">
-            <label for="f-guests" data-i18n="rsvp.guests">Número de personas (incluyéndote)</label>
-            <input type="number" id="f-guests" name="guests" min="1" max="5" step="1" value="1" inputmode="numeric">
-          </div>
-
           <div class="field">
             <label for="f-song" data-i18n="rsvp.song">Canción que te haría bailar</label>
             <input type="text" id="f-song" name="song" data-i18n-ph="rsvp.songPh" placeholder="Opcional — para el DJ">
@@ -1246,8 +1241,6 @@ const CONFIG = {
   // so the layout can still be seen.
   photo: { src: "photos/photo.jpg" },
 
-  maxGuests: 5,        // the largest party a single RSVP may confirm
-
   hashtag: "#LosXVdeAshley",
 
   // --- Background music. Drop an .mp3 into the audio/ folder and point
@@ -1343,7 +1336,6 @@ const T = {
     "rsvp.namePh": "Como aparece en tu invitación",
     "rsvp.attending": "¿Nos acompañas?",
     "rsvp.yes": "Ahí estaré", "rsvp.no": "No podré ir",
-    "rsvp.guests": "Número de personas (incluyéndote, máx. {max})",
     "rsvp.song": "Canción que te haría bailar",
     "rsvp.songPh": "Opcional — para el DJ",
     "rsvp.message": "Un mensaje para {name}",
@@ -1369,7 +1361,7 @@ const T = {
     "send.done": "Ya lo envié",
     "send.back": "Volver al formulario",
     "send.note": "Tu confirmación no se envía hasta que elijas una de estas opciones.",
-    "rsvp.tally": "{guests} invitados confirmados",
+    "rsvp.tally": "{count} invitados confirmados",
     "wishes.kicker": "De parte de todos",
     "wishes.title": "Muro de buenos deseos",
     "wishes.sub": "Mensajes de quienes ya confirmaron",
@@ -1416,7 +1408,6 @@ const T = {
     "rsvp.namePh": "As it appears on your invitation",
     "rsvp.attending": "Will you join us?",
     "rsvp.yes": "I'll be there", "rsvp.no": "I can't make it",
-    "rsvp.guests": "How many in your party, including you (max {max})",
     "rsvp.song": "A song that would get you dancing",
     "rsvp.songPh": "Optional — for the DJ",
     "rsvp.message": "A message for {name}",
@@ -1442,7 +1433,7 @@ const T = {
     "send.done": "I've sent it",
     "send.back": "Back to the form",
     "send.note": "Your RSVP isn't sent until you pick one of these.",
-    "rsvp.tally": "{guests} guests confirmed",
+    "rsvp.tally": "{count} guests confirmed",
     "wishes.kicker": "From everyone",
     "wishes.title": "Wishes wall",
     "wishes.sub": "Messages from guests who have replied",
@@ -1773,7 +1764,7 @@ function applyLanguage() {
     const key = node.getAttribute("data-i18n");
     let value = t(key);
     if (typeof value === "string") {
-      node.textContent = value.replace("{name}", CONFIG.firstName).replace("{max}", CONFIG.maxGuests);
+      node.textContent = value.replace("{name}", CONFIG.firstName);
     }
   });
   $$("[data-i18n-ph]").forEach((node) => {
@@ -1807,7 +1798,6 @@ function applyLanguage() {
   }
   $("#party-name").textContent = CONFIG.party.name;
   $("#party-addr").textContent = [CONFIG.party.address, formatTime(PARTY)].filter(Boolean).join(" · ");
-  $("#f-guests").max = CONFIG.maxGuests;
   $("#hashtag").textContent = CONFIG.hashtag;
 
   $("#rsvp-deadline").textContent = lang === "es"
@@ -1902,13 +1892,6 @@ $("#f-edit").addEventListener("click", () => {
   $("#f-name").focus();
 });
 
-// Party size only matters if they are coming.
-function syncGuestsField() {
-  $("#guests-field").hidden = form.elements.attending.value === "no";
-}
-$$("input[name='attending']").forEach((r) => r.addEventListener("change", syncGuestsField));
-syncGuestsField();
-
 function readForm() {
   const data = new FormData(form);
   const attending = data.get("attending");
@@ -1916,7 +1899,6 @@ function readForm() {
   return {
     name: (data.get("name") || "").toString().trim().slice(0, 80),
     attending: attending,
-    guests: attending === "si" ? Math.max(1, Math.min(CONFIG.maxGuests, Number(data.get("guests")) || 1)) : 0,
     song: (data.get("song") || "").toString().trim().slice(0, 120),
     message: message,
     hasMessage: message.length > 0,
@@ -1928,9 +1910,9 @@ function readForm() {
 function rsvpMessage(reply) {
   const lines = lang === "es"
     ? ["Confirmación XV de " + CONFIG.firstName, "Nombre: " + reply.name,
-       reply.attending === "si" ? "Asistiré — personas: " + reply.guests : "No podré asistir"]
+       reply.attending === "si" ? "Asistiré" : "No podré asistir"]
     : [CONFIG.firstName + "'s quinceañera RSVP", "Name: " + reply.name,
-       reply.attending === "si" ? "Attending — party of " + reply.guests : "Cannot attend"];
+       reply.attending === "si" ? "Attending" : "Cannot attend"];
   if (reply.song) lines.push((lang === "es" ? "Canción: " : "Song: ") + reply.song);
   if (reply.message) lines.push((lang === "es" ? "Mensaje: " : "Message: ") + reply.message);
   return lines.join("\n");
@@ -2059,12 +2041,12 @@ function renderWishes(list) {
   }
 }
 
-function updateTally(guests) {
-  lastTally = guests;
+function updateTally(count) {
+  lastTally = count;
   const line = $("#tally");
-  if (guests === null || guests <= 0) { line.hidden = true; return; }
+  if (count === null || count <= 0) { line.hidden = true; return; }
   line.hidden = false;
-  line.textContent = t("rsvp.tally").replace("{guests}", guests);
+  line.textContent = t("rsvp.tally").replace("{count}", count);
 }
 
 (async function connect() {
@@ -2077,11 +2059,8 @@ function updateTally(guests) {
   const onError = () => { /* subscription ended; the form still works */ };
 
   db.collection("rsvps").where("attending", "==", "si").limit(1000)
-    .onSnapshot((snap) => {
-      let guests = 0;
-      snap.docs.forEach((d) => { guests += Number(d.data().guests) || 0; });
-      updateTally(guests);
-    }, onError);
+    // One reply is one guest now that party size is gone.
+    .onSnapshot((snap) => updateTally(snap.size), onError);
 
   db.collection("rsvps").where("hasMessage", "==", true).orderBy("createdAt", "desc").limit(40)
     .onSnapshot((snap) => {
@@ -2097,10 +2076,8 @@ function updateTally(guests) {
         const f = form.elements;
         f.name.value = savedReply.name || "";
         f.attending.value = savedReply.attending || "si";
-        f.guests.value = savedReply.guests || 1;
         f.song.value = savedReply.song || "";
         f.message.value = savedReply.message || "";
-        syncGuestsField();
         showThanks(savedReply.attending);
       }
     } catch (e) { /* first visit on this device, or the reply was removed */ }
