@@ -539,6 +539,7 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 .choice:has(input:checked) { border-color: var(--metal); background: rgba(194, 204, 219, 0.10); }
 
 .hint { font-size: 0.94rem; color: var(--muted); font-style: italic; margin: -0.5rem 0 1.2rem; }
+.field .hint { margin: 0.1rem 0 0; }
 
 .btn {
   appearance: none;
@@ -1095,6 +1096,7 @@ body.gated { overflow: hidden; }
           <div class="field" id="guests-field">
             <label for="f-guests" data-i18n="rsvp.guests">Número de personas (incluyéndote)</label>
             <input type="number" id="f-guests" name="guests" min="1" max="3" step="1" value="1" inputmode="numeric">
+            <p class="hint" data-i18n="rsvp.noKids">Evento solo para adultos. Gracias por comprender.</p>
           </div>
 
           <div class="field">
@@ -1349,6 +1351,7 @@ const T = {
     "rsvp.namePh": "Como aparece en tu invitación",
     "rsvp.attending": "¿Nos acompañas?",
     "rsvp.guests": "Número de personas (incluyéndote, máx. {max})",
+    "rsvp.noKids": "Evento solo para adultos. Gracias por comprender.",
     "rsvp.yes": "Ahí estaré", "rsvp.no": "No podré ir",
     "rsvp.song": "Canción que te haría bailar",
     "rsvp.songPh": "Opcional — para el DJ",
@@ -1422,6 +1425,7 @@ const T = {
     "rsvp.namePh": "As it appears on your invitation",
     "rsvp.attending": "Will you join us?",
     "rsvp.guests": "How many in your party, including you (max {max})",
+    "rsvp.noKids": "Adults only. Thank you for understanding.",
     "rsvp.yes": "I'll be there", "rsvp.no": "I can't make it",
     "rsvp.song": "A song that would get you dancing",
     "rsvp.songPh": "Optional — for the DJ",
