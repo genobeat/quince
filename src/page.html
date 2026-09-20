@@ -539,7 +539,23 @@ fieldset { border: 0; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55re
 .choice:has(input:checked) { border-color: var(--metal); background: rgba(194, 204, 219, 0.10); }
 
 .hint { font-size: 0.94rem; color: var(--muted); font-style: italic; margin: -0.5rem 0 1.2rem; }
-.field .hint { margin: 0.1rem 0 0; }
+
+/* A rule guests must not skim past: engraved caps in a bordered panel,
+   using the same border and fill as the raised panels elsewhere. */
+.notice {
+  margin: 0.6rem 0 0;
+  padding: 12px 14px;
+  text-align: center;
+  font-family: var(--engrave);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  line-height: 1.65;
+  text-transform: uppercase;
+  color: var(--foil);
+  border: 1px solid var(--line);
+  background: var(--panel-flat);
+}
 
 .btn {
   appearance: none;
@@ -1096,7 +1112,7 @@ body.gated { overflow: hidden; }
           <div class="field" id="guests-field">
             <label for="f-guests" data-i18n="rsvp.guests">Número de personas (incluyéndote)</label>
             <input type="number" id="f-guests" name="guests" min="1" max="3" step="1" value="1" inputmode="numeric">
-            <p class="hint" data-i18n="rsvp.noKids">Evento solo para adultos. Gracias por comprender.</p>
+            <p class="notice" data-i18n="rsvp.noKids">Evento solo para adultos. Gracias por comprender.</p>
           </div>
 
           <div class="field">
