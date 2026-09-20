@@ -1224,7 +1224,7 @@ const CONFIG = {
       names: ["Sally Castro"] },
     { es: "Agradecimiento especial", en: "Special thanks",
       names: ["Gabriela y Ricardo Flores", "Ramon Cervantes",
-              "Guillermina Valdez", "Mariel Lopez", "Dolores Acosta"] }
+              "Mariel Lopez", "Dolores Acosta", "Guillermina Valdes"] }
   ],
 
   // --- Where. `mass: null` hides the Mass section entirely. ---
@@ -1527,7 +1527,7 @@ function weekdayOf(date) {
   return lang === "es" ? w.charAt(0).toUpperCase() + w.slice(1) : w;
 }
 
-// "Adriana Valdez y Jose Valdez" / "... and ..."
+// "Adriana Valdes y Rodrigo Valdes" / "... and ..."
 function nameList(list) {
   if (!list || !list.length) return "";
   if (list.length === 1) return list[0];
