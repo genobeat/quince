@@ -1,9 +1,11 @@
-# Portrait
+# Portraits
 
-The photo that sits between the countdown and the invitation.
+Three photos spaced down the page: after the opening divider, before the court
+of honor, and before the RSVP.
 
-Drop the image here, then point `CONFIG.photo.src` in `src/page.html` at it —
-for example `photos/ashley.jpg` — and run `./scripts/build.sh`.
+Drop them here as `photo.jpg`, `photo2.jpg` and `photo3.jpg` — the paths
+`CONFIG.photos` already points at — and run `./scripts/build.sh`. To use other
+filenames, edit that array instead.
 
 - **Shape:** the frame is 4:5 portrait. Any image works; the middle is filled
   and the overflow cropped, so a portrait-orientation photo loses the least.
@@ -11,6 +13,6 @@ for example `photos/ashley.jpg` — and run `./scripts/build.sh`.
   so guests on phone data are not waiting on it.
 - **Format:** `.jpg` for photographs, `.webp` if you have it.
 
-Leave `src` as `""` and the frame shows a placeholder instead, so the layout is
-still visible. A file that is missing or unreadable falls back to the same
-placeholder rather than a broken image.
+A slot whose file is missing or unreadable shows a placeholder frame instead of
+a broken image, so the layout reads before the photos exist. Set an entry to
+`null` to remove that slot from the page altogether.

@@ -989,8 +989,8 @@ body.gated { overflow: hidden; }
     <div class="wrap">
       <figure class="portrait">
         <div class="portrait-frame">
-          <img id="portrait-img" alt="" hidden>
-          <div class="portrait-empty" id="portrait-empty">
+          <img class="portrait-img" alt="" hidden>
+          <div class="portrait-empty">
             <span data-i18n="photo.placeholder">Tu foto aquí</span>
             <small data-i18n="photo.hint">Retrato vertical · 4:5</small>
           </div>
@@ -1004,7 +1004,6 @@ body.gated { overflow: hidden; }
     <div class="wrap center">
       <p class="verse" data-i18n="invite.verse">Hay momentos que la vida guarda con especial cuidado. Con el corazón lleno de gratitud a Dios y a la vida, te invitamos a acompañarnos en la celebración de mis quince años.</p>
       <div class="hosts" id="hosts"></div>
-      </div>
     </div>
   </section>
 
@@ -1023,6 +1022,26 @@ body.gated { overflow: hidden; }
         <p class="sub">Sábado 17 de abril · de la misa al último baile</p>
       </div>
       <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <div class="fleuron" aria-hidden="true">
+    <span class="rule"></span>
+    <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
+    <span class="rule"></span>
+  </div>
+
+  <section class="portrait-section">
+    <div class="wrap">
+      <figure class="portrait">
+        <div class="portrait-frame">
+          <img class="portrait-img" alt="" hidden>
+          <div class="portrait-empty">
+            <span data-i18n="photo.placeholder">Tu foto aquí</span>
+            <small data-i18n="photo.hint">Retrato vertical · 4:5</small>
+          </div>
+        </div>
+      </figure>
     </div>
   </section>
 
@@ -1084,6 +1103,20 @@ body.gated { overflow: hidden; }
     <svg width="34" height="10" viewBox="0 0 34 10"><path d="M17 0 L21 5 L17 10 L13 5 Z" fill="#A3B1C6"/><circle cx="4" cy="5" r="1.6" fill="#AFBFD6"/><circle cx="30" cy="5" r="1.6" fill="#AFBFD6"/></svg>
     <span class="rule"></span>
   </div>
+
+  <section class="portrait-section">
+    <div class="wrap">
+      <figure class="portrait">
+        <div class="portrait-frame">
+          <img class="portrait-img" alt="" hidden>
+          <div class="portrait-empty">
+            <span data-i18n="photo.placeholder">Tu foto aquí</span>
+            <small data-i18n="photo.hint">Retrato vertical · 4:5</small>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
 
   <!-- ===== RSVP ===== -->
   <section id="rsvp">
@@ -1259,10 +1292,14 @@ const CONFIG = {
   // --- Gift registry. Leave the array empty to show only the envelope shower. ---
   registry: [],
 
-  // A portrait between the countdown and the invitation. Drop a file into
-  // photos/ and point src at it; "" leaves a placeholder frame in its place
-  // so the layout can still be seen.
-  photo: { src: "photos/photo.jpg" },
+  // Three portraits spaced down the page, in order. A path that has no
+  // file yet falls back to a placeholder frame, so the layout reads before
+  // the photos exist; null removes that slot altogether.
+  photos: [
+    "photos/photo.jpg",
+    "photos/photo2.jpg",
+    "photos/photo3.jpg"
+  ],
 
   maxGuests: 3,        // the largest party a single RSVP may confirm
 
@@ -1713,22 +1750,29 @@ function renderCourt() {
   }
 }
 
-function renderPhoto() {
-  const img = $("#portrait-img");
-  const empty = $("#portrait-empty");
-  const src = (CONFIG.photo && CONFIG.photo.src) || "";
-  img.hidden = !src;
-  empty.hidden = !!src;
-  if (src) {
-    img.src = src;
-    img.alt = CONFIG.firstName + " " + CONFIG.lastName;
-  }
+function renderPhotos() {
+  $$(".portrait-section").forEach((slot, i) => {
+    const src = (CONFIG.photos || [])[i];
+    slot.hidden = src === null || src === undefined;
+    if (slot.hidden) return;
+
+    const img = slot.querySelector(".portrait-img");
+    const empty = slot.querySelector(".portrait-empty");
+    img.hidden = !src;
+    empty.hidden = !!src;
+    if (src) {
+      img.src = src;
+      img.alt = CONFIG.firstName + " " + CONFIG.lastName;
+    }
+  });
 }
 
 // A missing or unreadable file falls back to the frame rather than a broken image.
-$("#portrait-img").addEventListener("error", () => {
-  $("#portrait-img").hidden = true;
-  $("#portrait-empty").hidden = false;
+$$(".portrait-img").forEach((img) => {
+  img.addEventListener("error", () => {
+    img.hidden = true;
+    img.closest(".portrait-frame").querySelector(".portrait-empty").hidden = false;
+  });
 });
 
 function renderHosts() {
@@ -1841,7 +1885,7 @@ function applyLanguage() {
     : "Kindly reply by " + formatDate(DEADLINE);
 
   renderMaps("#party-maps", CONFIG.party);
-  renderPhoto();
+  renderPhotos();
   renderHosts();
   renderItinerary();
   renderCourt();
