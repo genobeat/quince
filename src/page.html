@@ -439,6 +439,15 @@ a { color: var(--metal-2); }
   gap: 0.4rem;
   margin-bottom: 1.1rem;
 }
+.dress-color {
+  font-family: var(--engrave);
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foil);
+}
+#dress-forbidden { margin-top: 1.2rem; }
 
 .detail-kicker {
   font-family: var(--engrave);
@@ -1083,10 +1092,11 @@ body.gated { overflow: hidden; }
       <div class="detail">
         <div class="detail-kicker" data-i18n="details.dress">Código de vestimenta</div>
         <div id="dress-code">
-          <div id="dress-code-main">Formal</div>
-          <div id="dress-code-reserved">El azul marino está reservado para la quinceañera.</div>
+          <div id="dress-code-main">Etiqueta / Formal</div>
+          <div id="dress-code-wear"></div>
         </div>
         <div class="swatches" id="swatches"></div>
+        <p class="notice" id="dress-forbidden"></p>
         <p class="hint" id="dress-note" style="margin-top:1rem"></p>
       </div>
 
@@ -1268,14 +1278,20 @@ const CONFIG = {
     address: "500 Baker St, Bakersfield, CA 93305"
   },
 
-  // --- Dress code. `avoid` renders a crossed-out swatch per colour;
-  //     `court` renders a plain one showing what the court is wearing. ---
+  // --- Dress code. `wearColor` is the colour guests are asked to wear and
+  //     gets a plain swatch; each `avoid` colour gets a crossed-out one;
+  //     `court` shows what the damas are wearing. ---
   dress: {
-    es: "Formal",
-    en: "Formal",
-    reserved: {
-      es: "El azul marino está reservado para la quinceañera.",
-      en: "Navy blue is reserved for the quinceañera."
+    es: "Etiqueta / Formal",
+    en: "Black tie / Formal",
+    wear: {
+      es: "Invitados asistir vestidos de color:",
+      en: "Guests are asked to wear:"
+    },
+    wearColor: { color: "#0B0B12", es: "Negro", en: "Black" },
+    forbidden: {
+      es: "Ningún invitado debe vestir de azul marino. Ese color está reservado para la quinceañera.",
+      en: "No guest may wear navy blue. That color is reserved for the quinceañera."
     },
     avoid: [
       { color: "#2A5595", es: "Azul marino", en: "Navy blue" }
@@ -1285,8 +1301,8 @@ const CONFIG = {
       es: "Las damas", en: "The damas"
     },
     note: {
-      es: "Cualquier otro color es bienvenido. Las damas vestirán en tonos durazno y beige.",
-      en: "Every other color is welcome. The damas will be in apricot and beige."
+      es: "Las damas vestirán en tonos durazno y beige.",
+      en: "The damas will be in apricot and beige."
     }
   },
 
@@ -1796,7 +1812,13 @@ function renderHosts() {
 
 function renderDress() {
   $("#dress-code-main").textContent = CONFIG.dress[lang];
-  $("#dress-code-reserved").textContent = CONFIG.dress.reserved[lang];
+
+  // The colour itself is a separate node so it can carry its own weight.
+  const wear = $("#dress-code-wear");
+  wear.textContent = CONFIG.dress.wear[lang] + " ";
+  wear.appendChild(el("strong", "dress-color", CONFIG.dress.wearColor[lang]));
+
+  $("#dress-forbidden").textContent = CONFIG.dress.forbidden[lang];
 
   const box = $("#swatches");
   box.textContent = "";
@@ -1810,6 +1832,8 @@ function renderDress() {
     box.appendChild(cell);
   }
 
+  // What to wear, then what not to, then what the court is wearing.
+  if (CONFIG.dress.wearColor) swatch(CONFIG.dress.wearColor, false);
   (CONFIG.dress.avoid || []).forEach((item) => swatch(item, true));
   if (CONFIG.dress.court) swatch(CONFIG.dress.court, false);
 
